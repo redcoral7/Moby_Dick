@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사이버 펑크 블랙잭</title>
+    <style>
+        /* 검은색과 파란색 중심의 네온 다크 테마 */
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .game-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #111827;
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #1e40af;
+            box-shadow: 0 0 20px rgba(30, 64, 175, 0.4);
+        }
+        h1 {
+            color: #3b82f6;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #93c5fd;
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+        /* 메인 화면 및 도움말 */
+        .menu-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .help-box {
+            background-color: #1e293b;
+            border: 1px solid #1e40af;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            width: 90%;
+            margin-top: 15px;
+        }
+        .help-box ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        /* 배팅 입력 영역 */
+        .bet-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #1e293b;
+            border-radius: 8px;
+            border: 1px dashed #3b82f6;
+        }
+        .bet-container label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .bet-container input {
+            background-color: #0f172a;
+            border: 1px solid #3b82f6;
+            color: #fff;
+            padding: 8px;
+            width: 100px;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .bet-container input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
+        }
+        /* 게임 테이블 구역 */
+        .section {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #1e293b;
+            border-radius: 10px;
+            border: 1px solid #1e40af;
+        }
+        .cards {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(255,255,255,0.2);
+        }
+        .score {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+        /* 버튼 공통 및 디자인 */
+        button {
+            font-size: 16px;
+            padding: 12px 24px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .menu-btn { width: 80%; background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+        .menu-btn:hover { background-color: #172554; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
+        .start-btn { width: 80%; background-color: #2563eb; color: white; }
+        .start-btn:hover { background-color: #1d4ed8; box-shadow: 0 0 10px rgba(37, 99, 235, 0.5); }
+        
+        #hit-btn { background-color: #2563eb; color: white; }
+        #hit-btn:hover:not(:disabled) { background-color: #1d4ed8; }
+        #stand-btn { background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+        #stand-btn:hover:not(:disabled) { background-color: #172554; }
+        #deal-btn { background-color: #10b981; color: white; width: 80%; margin-top: 10px; }
+        #deal-btn:hover:not(:disabled) { background-color: #059669; }
+        #back-btn { background-color: #475569; color: white; }
+        #back-btn:hover { background-color: #334155; }
+        
+        button:disabled {
+            background-color: #334155 !important;
+            color: #64748b !important;
+            border: none !important;
+            cursor: not-allowed;
+        }
+        /* 메시지 영역 */
+        #message {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #38bdf8;
+            min-height: 30px;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+        }
+        #result-calc {
+            font-size: 16px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        .win-text { color: #4ade80 !important; text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+        .lose-text { color: #f87171 !important; text-shadow: 0 0 8px rgba(248, 113, 113, 0.4); }
+        
+        /* 화면 숨김 처리용 크래스 */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>♠️ CYBER BLACKJACK ♣️</h1>
+    
+    <!-- [1] 첫 페이지 (메인 메뉴) -->
+    <div id="main-menu" class="menu-screen">
+        <button class="start-btn" onclick="showBetScreen()">게임 시작 (Start Game)</button>
+        <button class="menu-btn" onclick="toggleHelp()">도움말 (Help)</button>
+        
+        <!-- 도움말 박스 (기본적으로 숨김) -->
+        <div id="help-box" class="help-box hidden">
+            <strong>📋 게임 규칙 안내</strong><br>
+            1. 카드 점수 합계가 <strong>21점</strong>에 가장 가까운 사람이 승리합니다.<br>
+            2. 21점을 초과(Bust)하면 즉시 패배합니다.<br>
+            3. 계산법: K, Q, J는 10점 / A는 1점 또는 11점 유동적 계산<br>
+            4. 딜러는 17점 이상이 될 때까지 무조건 카드를 뽑아야 합니다.<br><br>
+            <strong>💰 포인트 배팅 정산</strong>
+            <ul>
+                <li>플레이어 승리 시: 배팅금의 <span class="win-text">10배</span> 포인트 획득 통보</li>
+                <li>딜러 승리 시: 배팅금의 <span class="lose-text">-5배</span> 포인트 차감 통보</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- [2] 게임 플레이 화면 (기본적으로 숨김) -->
+    <div id="game-table" class="hidden">
+        <!-- 배팅 설정창 -->
+        <div class="bet-container">
+            <label for="bet-input">💵 배팅 금액 입력 :</label>
+            <input type="number" id="bet-input" value="100" min="1"> P
+            <button id="deal-btn" onclick="startRound()">배팅 및 카드 받기 (Deal)</button>
+        </div>
+        
+        <div class="section">
+            <h2>딜러 (Dealer)</h2>
+            <div id="dealer-cards" class="cards">-</div>
+            <div id="dealer-score" class="score">점수: 0</div>
+        </div>
+
+        <div class="section">
+            <h2>플레이어 (You)</h2>
+            <div id="player-cards" class="cards">-</div>
+            <div id="player-score" class="score">점수: 0</div>
+        </div>
+
+        <div>
+            <div id="message">배팅 금액을 입력하고 카드를 받으세요!</div>
+            <div id="result-calc"></div>
+        </div>
+
+        <div class="controls">
+            <button id="hit-btn" onclick="hit()" disabled>히트 (Hit)</button>
+            <button id="stand-btn" onclick="stand()" disabled>스탠드 (Stand)</button>
+            <button id="back-btn" onclick="goToMenu()" class="hidden">메인 메뉴로</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let isGameOver = true;
+    let currentBet = 0;
+
+    const suits = ['♠', '◆', '♥', '♣'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+    /* 화면 전환 함수 */
+    function showBetScreen() {
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('game-table').classList.remove('hidden');
+        resetTableUI();
+    }
+
+    function goToMenu() {
+        document.getElementById('game-table').classList.add('hidden');
+        document.getElementById('main-menu').classList.remove('hidden');
+    }
+
+    function toggleHelp() {
+        const helpBox = document.getElementById('help-box');
+        helpBox.classList.toggle('hidden');
+    }
+
+    function resetTableUI() {
+        document.getElementById('dealer-cards').innerText = '-';
+        document.getElementById('dealer-score').innerText = '점수: 0';
+        document.getElementById('player-cards').innerText = '-';
+        document.getElementById('player-score').innerText = '점수: 0';
+        document.getElementById('message').innerText = '배팅 금액을 입력하고 카드를 받으세요!';
+        document.getElementById('message').className = '';
+        document.getElementById('result-calc').innerText = '';
+        document.getElementById('back-btn').classList.add('hidden');
+        document.getElementById('deal-btn').disabled = false;
+        document.getElementById('bet-input').disabled = false;
+    }
+
+    /* 게임 로직 코드 */
+    function createDeck() {
+        deck = [];
+        for (let suit of suits) {
+            for (let value of values) {
+                deck.push({ suit, value });
+            }
+        }
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+    }
+
+    function calculateScore(hand) {
+        let score = 0;
+        let aceCount = 0;
+        for (let card of hand) {
+            if (['J', 'Q', 'K'].includes(card.value)) {
+                score += 10;
+            } else if (card.value === 'A') {
+                score += 11;
+                aceCount++;
+            } else {
+                score += parseInt(card.value);
+            }
+        }
+        while (score > 21 && aceCount > 0) {
+            score -= 10;
+            aceCount--;
+        }
+        return score;
+    }
+
+    function updateUI(hideDealerCard = true) {
+        document.getElementById('player-cards').innerText = playerHand.map(c => c.suit + c.value).join(' ');
+        document.getElementById('player-score').innerText = `점수: ${calculateScore(playerHand)}`;
+
+        if (hideDealerCard && dealerHand.length > 0) {
+            document.getElementById('dealer-cards').innerText = dealerHand[0].suit + dealerHand[0].value + ' 🂠';
+            document.getElementById('dealer-score').innerText = '점수: ?';
+        } else {
+            document.getElementById('dealer-cards').innerText = dealerHand.map(c => c.suit + c.value).join(' ');
+            document.getElementById('dealer-score').innerText = `점수: ${calculateScore(dealerHand)}`;
+        }
+    }
+
+    // 배팅 확인 후 라운드 시작
+    function startRound() {
+        const betInput = document.getElementById('bet-input');
+        const betValue = parseInt(betInput.value);
+
+        if (isNaN(betValue) || betValue <= 0) {
+            alert('올바른 배팅 금액을 입력해주세요!');
+            return;
+        }
+
+        currentBet = betValue;
+        isGameOver = false;
+
+        createDeck();
+        playerHand = [deck.pop(), deck.pop()];
+        dealerHand = [deck.pop(), deck.pop()];
+
+        document.getElementById('message').className = '';
+        document.getElementById('message').innerText = `💸 ${currentBet}P 배팅 완료! 카드를 더 받으시겠습니까?`;
+        document.getElementById('result-calc').innerText = '';
+        
+        document.getElementById('hit-btn').disabled = false;
+        document.getElementById('stand-btn').disabled = false;
+        document.getElementById('deal-btn').disabled = true;
+        document.getElementById('bet-input').disabled = true;
+        document.getElementById('back-btn').classList.add('hidden');
+
+        if (calculateScore(playerHand) === 21) {
+            endGame();
+            return;
+        }
+
+        updateUI(true);
+    }
+
+    function hit() {
+        if (isGameOver) return;
+        playerHand.push(deck.pop());
+        updateUI(true);
+
+        if (calculateScore(playerHand) > 21) {
+            endGame();
+        }
+    }
+
+    function stand() {
+        if (isGameOver) return;
+        while (calculateScore(dealerHand) < 17) {
+            dealerHand.push(deck.pop());
+        }
+        endGame();
+    }
+
+    // 결과 안내 및 배율 정산 문구 출력
+    function endGame() {
+        isGameOver = true;
+        document.getElementById('hit-btn').disabled = true;
+        document.getElementById('stand-btn').disabled = true;
+        document.getElementById('deal-btn').disabled = false;
+        document.getElementById('bet-input').disabled = false;
+        document.getElementById('back-btn').classList.remove('hidden'); // 게임 종료 후 메뉴 이동 허용
+
+        const playerScore = calculateScore(playerHand);
+        const dealerScore = calculateScore(dealerHand);
+        
+        let messageElement = document.getElementById('message');
+        let calcElement = document.getElementById('result-calc');
+        let status = ''; 
+
+        updateUI(false);
+
+        if (playerScore > 21) {
+            status = 'lose';
+            messageElement.innerText = '❌ 버스트(Bust)! 21점을 초과했습니다.';
+        } else if (dealerScore > 21) {
+            status = 'win';
+            messageElement.innerText = '🎉 딜러 버스트! 당신이 승리했습니다!';
+        } else if (playerScore > dealerScore) {
+            status = 'win';
+            messageElement.innerText = '🎉 승리했습니다! 플레이어 점수가 더 높습니다.';
+        } else if (playerScore < dealerScore) {
+            status = 'lose';
+            messageElement.innerText = '❌ 패배했습니다. 딜러 점수가 더 높습니다.';
+        } else {
+            status = 'draw';
+            messageElement.innerText = '🤝 비겼습니다 (Push)!';
+        }
+
+        // 결과 정산 배율 텍스트 세팅
+        if (status === 'win') {
+            messageElement.className = 'win-text';
+            calcElement.innerText = `📈 결과 정산: 플레이어 승리 (+${currentBet * 10} 포인트)`;
+            calcElement.style.color = '#4ade80';
+        } else if (status === 'lose') {
+            messageElement.className = 'lose-text';
+            calcElement.innerText = `📉 결과 정산: 딜러 승리 (-${currentBet * 5} 포인트)`;
+            calcElement.style.color = '#f87171';
+        } else {
+            calcElement.innerText = `결과 정산: 무승부 (0 포인트)`;
+            calcElement.style.color = '#94a3b8';
+        }
+    }
+</script>
+
+</body>
+</html>
