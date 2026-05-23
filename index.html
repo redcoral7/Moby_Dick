@@ -3,405 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사이버 펑크 블랙잭</title>
+    <title>사이버 멀티 아케이드 시스템 (Custom Slot Name)</title>
     <style>
-        /* 검은색과 파란색 중심의 네온 다크 테마 */
+        /* 기본 레이아웃 및 다크 테마 */
         body {
             font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
-            background-color: #0b0f19;
+            background-color: #05070c;
             color: #e2e8f0;
-            text-align: center;
-            padding: 20px;
             margin: 0;
+            padding: 20px;
         }
-        .game-container {
-            max-width: 600px;
-            margin: 30px auto;
-            background-color: #111827;
-            padding: 30px;
-            border-radius: 16px;
-            border: 2px solid #1e40af;
-            box-shadow: 0 0 20px rgba(30, 64, 175, 0.4);
-        }
-        h1 {
-            color: #3b82f6;
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #93c5fd;
-            font-size: 18px;
+        h1, h2, h3, h4 {
             margin: 0 0 10px 0;
         }
-        /* 메인 화면 및 도움말 */
-        .menu-screen {
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1e293b;
+        }
+        header h1 {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* [1] 초기 환경 설정 화면 */
+        .setup-screen {
+            max-width: 500px;
+            margin: 60px auto;
+            background-color: #0f172a;
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .setup-screen select {
+            background-color: #1e293b;
+            color: #fff;
+            border: 1px solid #475569;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            width: 100%;
+            margin: 15px 0 25px 0;
+            text-align: center;
+        }
+
+        /* [2] 게임 메인 전역 레이아웃 (그리드 멀티뷰) */
+        .arcade-grid {
+            display: grid;
+            gap: 20px;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        /* 테이블 수에 맞는 동적 반응형 그리드 배치 */
+        .grid-1 { grid-template-columns: 1fr; max-width: 600px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(2, 1fr); } 
+        .grid-5, .grid-6 { grid-template-columns: repeat(3, 1fr); } 
+        .grid-7, .grid-8 { grid-template-columns: repeat(4, 1fr); } 
+
+        /* 개별 게임 윈도우 슬롯 공통 마스터 */
+        .table-slot {
+            background-color: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            gap: 10px;
         }
-        .help-box {
-            background-color: #1e293b;
-            border: 1px solid #1e40af;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: left;
-            font-size: 14px;
-            line-height: 1.6;
-            width: 90%;
-            margin-top: 15px;
-        }
-        .help-box ul {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-        /* 배팅 입력 영역 */
-        .bet-container {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #1e293b;
-            border-radius: 8px;
-            border: 1px dashed #3b82f6;
-        }
-        .bet-container label {
+        .table-id {
+            font-size: 11px;
             font-weight: bold;
-            margin-right: 10px;
+            background-color: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #cbd5e1;
+            white-space: nowrap;
         }
-        .bet-container input {
-            background-color: #0f172a;
-            border: 1px solid #3b82f6;
-            color: #fff;
+        .table-title-text {
+            font-size: 14px; 
+            margin: 0; 
+            text-align: right;
+            word-break: break-all;
+        }
+
+        /* 게임 선택 셀렉터 폼 */
+        .game-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        .name-input-box {
+            width: 90%;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        .name-input-box label {
+            font-size: 12px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .name-input-box input {
+            width: 100%;
+            background-color: #020617;
+            border: 1px solid #475569;
+            color: white;
             padding: 8px;
-            width: 100px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        .name-input-box input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        /* [슬롯별 전용 고유 테마 스타일 코드] */
+        .table-slot.blackjack-theme {
+            background-color: #111827;
+            border-color: #1e40af;
+        }
+        .table-slot.blackjack-theme .table-title-text { color: #3b82f6; text-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
+
+        .table-slot.oddeven-theme {
+            background-color: #09140e;
+            border-color: #15803d;
+        }
+        .table-slot.oddeven-theme .table-title-text { color: #22c55e; text-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
+
+        /* 배팅 구역 디자인 */
+        .bet-box {
+            background-color: rgba(255, 255, 255, 0.04);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .bet-box input {
+            background-color: #020617;
+            border: 1px solid #475569;
+            color: white;
+            padding: 4px;
+            width: 70px;
             text-align: center;
-            font-size: 16px;
             border-radius: 4px;
         }
-        .bet-container input:focus {
-            outline: none;
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
-        }
-        /* 게임 테이블 구역 */
-        .section {
-            margin: 15px 0;
-            padding: 15px;
-            background-color: #1e293b;
-            border-radius: 10px;
-            border: 1px solid #1e40af;
-        }
-        .cards {
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 10px;
-            letter-spacing: 6px;
-            color: #ffffff;
-            text-shadow: 0 0 5px rgba(255,255,255,0.2);
-        }
-        .score {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-top: 5px;
-        }
-        /* 버튼 공통 및 디자인 */
-        button {
-            font-size: 16px;
-            padding: 12px 24px;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
+        .blackjack-theme .bet-box input { border-color: #3b82f6; }
+        .oddeven-theme .bet-box input { border-color: #22c55e; }
+
+        /* 플레이 영역 인게임 섹션 */
+        .game-section {
+            background-color: rgba(0,0,0,0.2);
             border-radius: 6px;
-            font-weight: bold;
-            transition: all 0.2s;
+            padding: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
-        .menu-btn { width: 80%; background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
-        .menu-btn:hover { background-color: #172554; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
-        .start-btn { width: 80%; background-color: #2563eb; color: white; }
-        .start-btn:hover { background-color: #1d4ed8; box-shadow: 0 0 10px rgba(37, 99, 235, 0.5); }
-        
-        #hit-btn { background-color: #2563eb; color: white; }
-        #hit-btn:hover:not(:disabled) { background-color: #1d4ed8; }
-        #stand-btn { background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
-        #stand-btn:hover:not(:disabled) { background-color: #172554; }
-        #deal-btn { background-color: #10b981; color: white; width: 80%; margin-top: 10px; }
-        #deal-btn:hover:not(:disabled) { background-color: #059669; }
-        #back-btn { background-color: #475569; color: white; }
-        #back-btn:hover { background-color: #334155; }
-        
-        button:disabled {
-            background-color: #334155 !important;
-            color: #64748b !important;
-            border: none !important;
-            cursor: not-allowed;
-        }
-        /* 메시지 영역 */
-        #message {
+        .game-section h4 { margin: 0 0 4px 0; color: #94a3b8; font-size: 12px; }
+
+        .display-output {
             font-size: 20px;
             font-weight: bold;
-            margin: 20px 0;
-            color: #38bdf8;
-            min-height: 30px;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+            min-height: 26px;
+            letter-spacing: 2px;
         }
-        #result-calc {
-            font-size: 16px;
-            margin-top: 5px;
+        .dice-output {
+            font-size: 24px;
             font-weight: bold;
+            min-height: 32px;
         }
-        .win-text { color: #4ade80 !important; text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
-        .lose-text { color: #f87171 !important; text-shadow: 0 0 8px rgba(248, 113, 113, 0.4); }
+
+        /* 알림 및 텍스트 문구 효과 */
+        .msg-line { font-size: 14px; font-weight: bold; margin: 10px 0; min-height: 20px; color: #38bdf8; }
+        .oddeven-theme .msg-line { color: #4ade80; }
+        .calc-line { font-size: 13px; font-weight: bold; min-height: 18px; }
+
+        .win-text { color: #4ade80 !important; }
+        .lose-text { color: #f87171 !important; }
+
+        /* 버튼 컴포넌트 세트 */
+        button {
+            font-size: 13px;
+            padding: 8px 14px;
+            margin: 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:disabled {
+            background-color: #1e293b !important;
+            color: #475569 !important;
+            cursor: not-allowed;
+        }
+        .global-btn { background-color: #3b82f6; color: white; font-size: 16px; padding: 12px 24px; }
+        .global-btn:hover { background-color: #1d4ed8; }
+
+        /* 내부 전용 액션 버튼 모음 */
+        .bj-btn-blue { background-color: #2563eb; color: white; }
+        .bj-btn-blue:hover:not(:disabled) { background-color: #1d4ed8; }
+        .bj-btn-dark { background-color: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+        .bj-btn-dark:hover:not(:disabled) { background-color: #172554; }
         
-        /* 화면 숨김 처리용 크래스 */
+        .oe-btn-green { background-color: #15803d; color: white; }
+        .oe-btn-green:hover:not(:disabled) { background-color: #166534; }
+        .oe-choice { background-color: #14532d; color: #86efac; border: 1px solid #22c55e; }
+        .oe-choice:hover:not(:disabled) { background-color: #15803d; color: white; }
+        .oe-choice.selected { background-color: #22c55e !important; color: #050b07 !important; }
+
+        .reset-btn { background-color: #475569; color: white; width: 100%; margin-top: auto; padding: 6px; font-size: 11px; }
+        .reset-btn:hover { background-color: #334155; }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <h1>♠️ CYBER BLACKJACK ♣️</h1>
-    
-    <!-- [1] 첫 페이지 (메인 메뉴) -->
-    <div id="main-menu" class="menu-screen">
-        <button class="start-btn" onclick="showBetScreen()">게임 시작 (Start Game)</button>
-        <button class="menu-btn" onclick="toggleHelp()">도움말 (Help)</button>
-        
-        <!-- 도움말 박스 (기본적으로 숨김) -->
-        <div id="help-box" class="help-box hidden">
-            <strong>📋 게임 규칙 안내</strong><br>
-            1. 카드 점수 합계가 <strong>21점</strong>에 가장 가까운 사람이 승리합니다.<br>
-            2. 21점을 초과(Bust)하면 즉시 패배합니다.<br>
-            3. 계산법: K, Q, J는 10점 / A는 1점 또는 11점 유동적 계산<br>
-            4. 딜러는 17점 이상이 될 때까지 무조건 카드를 뽑아야 합니다.<br><br>
-            <strong>💰 포인트 배팅 정산</strong>
-            <ul>
-                <li>플레이어 승리 시: 배팅금의 <span class="win-text">10배</span> 포인트 획득 통보</li>
-                <li>딜러 승리 시: 배팅금의 <span class="lose-text">-5배</span> 포인트 차감 통보</li>
-            </ul>
-        </div>
-    </div>
+<!-- 단일 마스터 타이틀 헤더 헤드 -->
+<header id="arcade-header" class="hidden">
+    <h1>🎮 CYBER MULTI-ARCADE SYSTEM</h1>
+    <button onclick="location.reload()" style="background-color: #f43f5e; color: white;">초기화 화면으로 이동</button>
+</header>
 
-    <!-- [2] 게임 플레이 화면 (기본적으로 숨김) -->
-    <div id="game-table" class="hidden">
-        <!-- 배팅 설정창 -->
-        <div class="bet-container">
-            <label for="bet-input">💵 배팅 금액 입력 :</label>
-            <input type="number" id="bet-input" value="100" min="1"> P
-            <button id="deal-btn" onclick="startRound()">배팅 및 카드 받기 (Deal)</button>
-        </div>
-        
-        <div class="section">
-            <h2>딜러 (Dealer)</h2>
-            <div id="dealer-cards" class="cards">-</div>
-            <div id="dealer-score" class="score">점수: 0</div>
-        </div>
-
-        <div class="section">
-            <h2>플레이어 (You)</h2>
-            <div id="player-cards" class="cards">-</div>
-            <div id="player-score" class="score">점수: 0</div>
-        </div>
-
-        <div>
-            <div id="message">배팅 금액을 입력하고 카드를 받으세요!</div>
-            <div id="result-calc"></div>
-        </div>
-
-        <div class="controls">
-            <button id="hit-btn" onclick="hit()" disabled>히트 (Hit)</button>
-            <button id="stand-btn" onclick="stand()" disabled>스탠드 (Stand)</button>
-            <button id="back-btn" onclick="goToMenu()" class="hidden">메인 메뉴로</button>
-        </div>
-    </div>
+<!-- [1단계] 화면 세팅 모듈 (구동 전 테이블 개수 설정) -->
+<div id="setup-view" class="setup-screen">
+    <h2>멀티 모니터 배정 시스템</h2>
+    <p>동시에 가동할 게임 테이블의 개수를 선택해 주세요.</p>
+    <select id="table-count-select">
+        <option value="1">1개 모니터 가동</option>
+        <option value="2">2개 모니터 분할 가동</option>
+        <option value="3">3개 모니터 분할 가동</option>
+        <option value="4" selected>4개 모니터 균등 가동 (추천)</option>
+        <option value="5">5개 멀티 모니터 가동</option>
+        <option value="6">6개 멀티 모니터 가동</option>
+        <option value="7">7개 대용량 멀티 가동</option>
+        <option value="8">8개 최대 모니터 가동</option>
+    </select>
+    <button class="global-btn" onclick="initializeArcadeGrid()">아케이드 관제 시작</button>
 </div>
 
+<!-- [2단계] 메인 멀티 화면 그리드 시스템 박스 -->
+<div id="arcade-viewport" class="arcade-grid hidden"></div>
+
 <script>
-    let deck = [];
-    let playerHand = [];
-    let dealerHand = [];
-    let isGameOver = true;
-    let currentBet = 0;
+    let totalTables = 0;
+    const tableStates = {}; 
 
     const suits = ['♠', '◆', '♥', '♣'];
     const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    const diceEmojis = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
-    /* 화면 전환 함수 */
-    function showBetScreen() {
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('game-table').classList.remove('hidden');
-        resetTableUI();
+    // 아케이드 모니터 그리드 시스템 초기 기동 빌더
+    function initializeArcadeGrid() {
+        const select = document.getElementById('table-count-select');
+        totalTables = parseInt(select.value);
+
+        document.getElementById('setup-view').classList.add('hidden');
+        document.getElementById('arcade-header').classList.remove('hidden');
+        
+        const viewport = document.getElementById('arcade-viewport');
+        viewport.classList.remove('hidden');
+        viewport.className = `arcade-grid grid-${totalTables}`;
+
+        for (let i = 1; i <= totalTables; i++) {
+            tableStates[i] = { type: 'none' }; 
+            viewport.innerHTML += createSlotHTML(i);
+        }
     }
 
-    function goToMenu() {
-        document.getElementById('game-table').classList.add('hidden');
-        document.getElementById('main-menu').classList.remove('hidden');
+    // 각 슬롯 구조물 템플릿 제네레이터
+    function createSlotHTML(id) {
+        return `
+            <div id="slot-${id}" class="table-slot">
+                <div class="table-header">
+                    <span class="table-id">SLOT-0${id}</span>
+                    <h3 id="title-${id}" class="table-title-text">대기 시스템</h3>
+                </div>
+                
+                <!-- 게임 모드 및 슬롯 이름 설정 레이어 -->
+                <div id="select-layer-${id}" class="game-selector">
+                    <div class="name-input-box">
+                        <label for="slot-name-${id}">🏷️ 슬롯 이름 설정</label>
+                        <input type="text" id="slot-name-${id}" placeholder="슬롯 0${id} 이름을 입력하세요" maxlength="15">
+                    </div>
+                    <button class="bj-btn-blue" style="width:90%; padding:10px;" onclick="setupGame(${id}, 'blackjack')">♠️ 블랙잭 탑재</button>
+                    <button class="oe-btn-green" style="width:90%; padding:10px;" onclick="setupGame(${id}, 'oddeven')">🎲 홀짝 시스템 탑재</button>
+                </div>
+
+                <!-- 인플레이 플레이존 마스터 본체 -->
+                <div id="play-layer-${id}" class="hidden" style="display:flex; flex-direction:column; flex-grow:1;">
+                    <div class="bet-box">
+                        <label>💵 배팅금액 : </label>
+                        <input type="number" id="bet-${id}" value="100" min="1"> P
+                    </div>
+
+                    <!-- [A] 블랙잭 전용 내부 판넬 -->
+                    <div id="bj-board-${id}" class="hidden">
+                        <div class="game-section">
+                            <h4>딜러 (Dealer)</h4>
+                            <div id="bj-dcards-${id}" class="display-output">-</div>
+                            <div id="bj-dscore-${id}" class="score">점수: 0</div>
+                        </div>
+                        <div class="game-section">
+                            <h4>플레이어 (You)</h4>
+                            <div id="bj-pcards-${id}" class="display-output">-</div>
+                            <div id="bj-pscore-${id}" class="score">점수: 0</div>
+                        </div>
+                    </div>
+
+                    <!-- [B] 홀짝 게임 전용 내부 판넬 -->
+                    <div id="oe-board-${id}" class="hidden">
+                        <div class="game-section" style="text-align:center;">
+                            <h4>예측 포지션 선택</h4>
+                            <button id="oe-oddbtn-${id}" class="oe-choice" onclick="oeSelect(${id}, 'odd')">홀 (Odd)</button>
+                            <button id="oe-evenbtn-${id}" class="oe-choice" onclick="oeSelect(${id}, 'even')">짝 (Even)</button>
+                        </div>
+                        <div class="game-section">
+                            <h4>주사위 결과 매칭</h4>
+                            <div id="oe-dice-${id}" class="dice-output" style="text-align:center;">🎲 🂠</div>
+                        </div>
+                    </div>
+
+                    <!-- 출력 하단 모듈 공통 연동 -->
+                    <div id="msg-${id}" class="msg-line">배팅 후 시스템 기동을 실행하세요.</div>
+                    <div id="calc-${id}" class="calc-line"></div>
+
+                    <!-- 제어 하단 스위치 킷 그룹 -->
+                    <div id="ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
+
+                    <button class="reset-btn" onclick="resetSlot(${id})">⚙️ 프로그램 모드 재선택</button>
+                </div>
+            </div>
+        `;
     }
 
-    function toggleHelp() {
-        const helpBox = document.getElementById('help-box');
-        helpBox.classList.toggle('hidden');
+    // 슬롯 기동 및 커스텀 네임 주입 제어 변환기
+    function setupGame(id, type) {
+        const nameInput = document.getElementById(`slot-name-${id}`);
+        // 사용자가 이름을 입력하지 않았을 경우 기본 이름 부여
+        let customName = nameInput.value.trim();
+        if (customName === "") {
+            customName = `슬롯 0${id}`;
+        }
+
+        document.getElementById(`select-layer-${id}`).classList.add('hidden');
+        document.getElementById(`play-layer-${id}`).classList.remove('hidden');
+        
+        const slot = document.getElementById(`slot-${id}`);
+        const title = document.getElementById(`title-${id}`);
+        
+        tableStates[id] = { type: type, isGameOver: true, currentBet: 0, customName: customName };
+
+        if (type === 'blackjack') {
+            slot.classList.add('blackjack-theme');
+            title.innerText = `${customName} [블랙잭]`;
+            document.getElementById(`bj-board-${id}`).classList.remove('hidden');
+            bjRenderControls(id, 'ready');
+        } else {
+            slot.classList.add('oddeven-theme');
+            title.innerText = `${customName} [홀짝]`;
+            document.getElementById(`oe-board-${id}`).classList.remove('hidden');
+            tableStates[id].userChoice = null;
+            oeRenderControls(id, 'ready');
+        }
     }
 
-    function resetTableUI() {
-        document.getElementById('dealer-cards').innerText = '-';
-        document.getElementById('dealer-score').innerText = '점수: 0';
-        document.getElementById('player-cards').innerText = '-';
-        document.getElementById('player-score').innerText = '점수: 0';
-        document.getElementById('message').innerText = '배팅 금액을 입력하고 카드를 받으세요!';
-        document.getElementById('message').className = '';
-        document.getElementById('result-calc').innerText = '';
-        document.getElementById('back-btn').classList.add('hidden');
-        document.getElementById('deal-btn').disabled = false;
-        document.getElementById('bet-input').disabled = false;
+    // 슬롯 리셋 시 대기 화면 및 입력 칸 복구
+    function resetSlot(id) {
+        const slot = document.getElementById(`slot-${id}`);
+        slot.className = 'table-slot';
+        document.getElementById(`title-${id}`).innerText = '대기 시스템';
+        document.getElementById(`play-layer-${id}`).classList.add('hidden');
+        document.getElementById(`bj-board-${id}`).classList.add('hidden');
+        document.getElementById(`oe-board-${id}`).classList.add('hidden');
+        document.getElementById(`select-layer-${id}`).classList.remove('hidden');
+        
+        // 기존에 적혀있던 이름 입력 칸 비우기
+        document.getElementById(`slot-name-${id}`).value = "";
+        tableStates[id] = { type: 'none' };
     }
 
-    /* 게임 로직 코드 */
-    function createDeck() {
-        deck = [];
+    /* ======================================================== */
+    /* [CORE PART A] 블랙잭 로직 스크립트엔진 */
+    /* ======================================================== */
+    function bjRenderControls(id, stage) {
+        const ctrl = document.getElementById(`ctrl-${id}`);
+        if (stage === 'ready') {
+            ctrl.innerHTML = `<button class="bj-btn-blue" style="width:100%;" onclick="bjStart(${id})">배팅 및 딜 실행 (Deal)</button>`;
+        } else if (stage === 'play') {
+            ctrl.innerHTML = `
+                <button class="bj-btn-blue" onclick="bjHit(${id})">히트 (Hit)</button>
+                <button class="bj-btn-dark" onclick="bjStand(${id})">스탠드 (Stand)</button>
+            `;
+        }
+    }
+
+    function bjStart(id) {
+        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+        if (isNaN(betVal) || betVal <= 0) return alert('올바른 액수를 투입하십시오.');
+
+        const state = tableStates[id];
+        state.isGameOver = false;
+        state.currentBet = betVal;
+
+        state.deck = [];
         for (let suit of suits) {
-            for (let value of values) {
-                deck.push({ suit, value });
-            }
+            for (let value of values) { state.deck.push({ suit, value }); }
         }
-        for (let i = deck.length - 1; i > 0; i--) {
+        for (let i = state.deck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[j]] = [deck[j], deck[i]];
+            [state.deck[i], state.deck[j]] = [state.deck[j], state.deck[i]];
+        }
+
+        state.playerHand = [state.deck.pop(), state.deck.pop()];
+        state.dealerHand = [state.deck.pop(), state.deck.pop()];
+
+        document.getElementById(`msg-${id}`).className = 'msg-line';
+        document.getElementById(`msg-${id}`).innerText = `💸 ${state.currentBet}P 배팅 연동 중...`;
+        document.getElementById(`calc-${id}`).innerText = '';
+        document.getElementById(`bet-${id}`).disabled = true;
+
+        bjRenderControls(id, 'play');
+        bjUpdateDisplay(id, true);
+
+        if (bjScore(state.playerHand) === 21) {
+            bjEnd(id);
         }
     }
 
-    function calculateScore(hand) {
-        let score = 0;
-        let aceCount = 0;
+    function bjScore(hand) {
+        let score = 0; let aceCount = 0;
         for (let card of hand) {
-            if (['J', 'Q', 'K'].includes(card.value)) {
-                score += 10;
-            } else if (card.value === 'A') {
-                score += 11;
-                aceCount++;
-            } else {
-                score += parseInt(card.value);
-            }
+            if (['J', 'Q', 'K'].includes(card.value)) score += 10;
+            else if (card.value === 'A') { score += 11; aceCount++; }
+            else score += parseInt(card.value);
         }
-        while (score > 21 && aceCount > 0) {
-            score -= 10;
-            aceCount--;
-        }
+        while (score > 21 && aceCount > 0) { score -= 10; aceCount--; }
         return score;
     }
 
-    function updateUI(hideDealerCard = true) {
-        document.getElementById('player-cards').innerText = playerHand.map(c => c.suit + c.value).join(' ');
-        document.getElementById('player-score').innerText = `점수: ${calculateScore(playerHand)}`;
+    function bjUpdateDisplay(id, hideDealer) {
+        const state = tableStates[id];
+        document.getElementById(`bj-pcards-${id}`).innerText = state.playerHand.map(c => c.suit+c.value).join(' ');
+        document.getElementById(`bj-pscore-${id}`).innerText = `점수: ${bjScore(state.playerHand)}`;
 
-        if (hideDealerCard && dealerHand.length > 0) {
-            document.getElementById('dealer-cards').innerText = dealerHand[0].suit + dealerHand[0].value + ' 🂠';
-            document.getElementById('dealer-score').innerText = '점수: ?';
+        if (hideDealer) {
+            document.getElementById(`bj-dcards-${id}`).innerText = state.dealerHand[0].suit + state.dealerHand[0].value + ' 🂠';
+            document.getElementById(`bj-dscore-${id}`).innerText = '점수: ?';
         } else {
-            document.getElementById('dealer-cards').innerText = dealerHand.map(c => c.suit + c.value).join(' ');
-            document.getElementById('dealer-score').innerText = `점수: ${calculateScore(dealerHand)}`;
+            document.getElementById(`bj-dcards-${id}`).innerText = state.dealerHand.map(c => c.suit+c.value).join(' ');
+            document.getElementById(`bj-dscore-${id}`).innerText = `점수: ${bjScore(state.dealerHand)}`;
         }
     }
 
-    // 배팅 확인 후 라운드 시작
-    function startRound() {
-        const betInput = document.getElementById('bet-input');
-        const betValue = parseInt(betInput.value);
+    function bjHit(id) {
+        const state = tableStates[id];
+        if (state.isGameOver) return;
+        state.playerHand.push(state.deck.pop());
+        bjUpdateDisplay(id, true);
 
-        if (isNaN(betValue) || betValue <= 0) {
-            alert('올바른 배팅 금액을 입력해주세요!');
-            return;
-        }
-
-        currentBet = betValue;
-        isGameOver = false;
-
-        createDeck();
-        playerHand = [deck.pop(), deck.pop()];
-        dealerHand = [deck.pop(), deck.pop()];
-
-        document.getElementById('message').className = '';
-        document.getElementById('message').innerText = `💸 ${currentBet}P 배팅 완료! 카드를 더 받으시겠습니까?`;
-        document.getElementById('result-calc').innerText = '';
-        
-        document.getElementById('hit-btn').disabled = false;
-        document.getElementById('stand-btn').disabled = false;
-        document.getElementById('deal-btn').disabled = true;
-        document.getElementById('bet-input').disabled = true;
-        document.getElementById('back-btn').classList.add('hidden');
-
-        if (calculateScore(playerHand) === 21) {
-            endGame();
-            return;
-        }
-
-        updateUI(true);
+        if (bjScore(state.playerHand) > 21) bjEnd(id);
     }
 
-    function hit() {
-        if (isGameOver) return;
-        playerHand.push(deck.pop());
-        updateUI(true);
-
-        if (calculateScore(playerHand) > 21) {
-            endGame();
+    function bjStand(id) {
+        const state = tableStates[id];
+        if (state.isGameOver) return;
+        while (bjScore(state.dealerHand) < 17) {
+            state.dealerHand.push(state.deck.pop());
         }
+        bjEnd(id);
     }
 
-    function stand() {
-        if (isGameOver) return;
-        while (calculateScore(dealerHand) < 17) {
-            dealerHand.push(deck.pop());
-        }
-        endGame();
-    }
+    function bjEnd(id) {
+        const state = tableStates[id];
+        state.isGameOver = true;
+        document.getElementById(`bet-${id}`).disabled = false;
+        bjRenderControls(id, 'ready');
+        bjUpdateDisplay(id, false);
 
-    // 결과 안내 및 배율 정산 문구 출력
-    function endGame() {
-        isGameOver = true;
-        document.getElementById('hit-btn').disabled = true;
-        document.getElementById('stand-btn').disabled = true;
-        document.getElementById('deal-btn').disabled = false;
-        document.getElementById('bet-input').disabled = false;
-        document.getElementById('back-btn').classList.remove('hidden'); // 게임 종료 후 메뉴 이동 허용
+        const p = bjScore(state.playerHand);
+        const d = bjScore(state.dealerHand);
+        let msg = document.getElementById(`msg-${id}`);
+        let calc = document.getElementById(`calc-${id}`);
+        let status = '';
 
-        const playerScore = calculateScore(playerHand);
-        const dealerScore = calculateScore(dealerHand);
-        
-        let messageElement = document.getElementById('message');
-        let calcElement = document.getElementById('result-calc');
-        let status = ''; 
+        if (p > 21) { status = 'lose'; msg.innerText = '❌ 플레이어 버스트!'; }
+        else if (d > 21) { status = 'win'; msg.innerText = '🎉 딜러 버스트 승리!'; }
+        else if (p > d) { status = 'win'; msg.innerText = '🎉 점수 우위 승리!'; }
+        else if (p < d) { status = 'lose'; msg.innerText = '❌ 점수 미달 패배.'; }
+        else { status = 'draw'; msg.innerText = '🤝 무승부 (Push)'; }
 
-        updateUI(false);
-
-        if (playerScore > 21) {
-            status = 'lose';
-            messageElement.innerText = '❌ 버스트(Bust)! 21점을 초과했습니다.';
-        } else if (dealerScore > 21) {
-            status = 'win';
-            messageElement.innerText = '🎉 딜러 버스트! 당신이 승리했습니다!';
-        } else if (playerScore > dealerScore) {
-            status = 'win';
-            messageElement.innerText = '🎉 승리했습니다! 플레이어 점수가 더 높습니다.';
-        } else if (playerScore < dealerScore) {
-            status = 'lose';
-            messageElement.innerText = '❌ 패배했습니다. 딜러 점수가 더 높습니다.';
-        } else {
-            status = 'draw';
-            messageElement.innerText = '🤝 비겼습니다 (Push)!';
-        }
-
-        // 결과 정산 배율 텍스트 세팅
         if (status === 'win') {
-            messageElement.className = 'win-text';
-            calcElement.innerText = `📈 결과 정산: 플레이어 승리 (+${currentBet * 10} 포인트)`;
-            calcElement.style.color = '#4ade80';
+            msg.className = 'msg-line win-text';
+            calc.innerText = `📈 정산 완료 (+${state.currentBet * 10} P)`;
+            calc.className = 'calc-line win-text';
         } else if (status === 'lose') {
-            messageElement.className = 'lose-text';
-            calcElement.innerText = `📉 결과 정산: 딜러 승리 (-${currentBet * 5} 포인트)`;
-            calcElement.style.color = '#f87171';
+            msg.className = 'msg-line lose-text';
+            calc.innerText = `📉 정산 완료 (-${state.currentBet * 5} P)`;
+            calc.className = 'calc-line lose-text';
         } else {
-            calcElement.innerText = `결과 정산: 무승부 (0 포인트)`;
-            calcElement.style.color = '#94a3b8';
+            calc.innerText = '결과 정산: 0 P';
+            calc.className = 'calc-line';
         }
+    }
+
+    /* ======================================================== */
+    /* [CORE PART B] 홀짝게임 로직 스크립트엔진 */
+    /* ======================================================== */
+    function oeRenderControls(id, stage) {
+        const ctrl = document.getElementById(`ctrl-${id}`);
+        if (stage === 'ready') {
+            ctrl.innerHTML = `<button class="oe-btn-green" style="width:100%;" onclick="oeRoll(${id})">결과 확인 (Roll Dice)</button>`;
+        }
+    }
+
+    function oeSelect(id, choice) {
+        const state = tableStates[id];
+        state.userChoice = choice;
+        
+        const oddBtn = document.getElementById(`oe-oddbtn-${id}`);
+        const evenBtn = document.getElementById(`oe-evenbtn-${id}`);
+        const msg = document.getElementById(`msg-${id}`);
+
+        if (choice === 'odd') {
+            oddBtn.classList.add('selected');
+            evenBtn.classList.remove('selected');
+            msg.innerText = '🔮 예측 완료: [홀] / 주사위를 굴리세요.';
+        } else {
+            evenBtn.classList.add('selected');
+            oddBtn.classList.remove('selected');
+            msg.innerText = '🔮 예측 완료: [짝] / 주사위를 굴리세요.';
+        }
+        msg.className = 'msg-line';
+    }
+
+    function oeRoll(id) {
+        const state = tableStates[id];
+        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+        
+        if (isNaN(betVal) || betVal <= 0) return alert('올바른 액수를 투입하십시오.');
+        if (!state.userChoice) return alert('홀 또는 짝 포지션을 먼저 선택하십시오.');
+
+        state.currentBet = betVal;
+
+        const d1 = Math.floor(Math.random() * 6) + 1;
+        const d2 = Math.floor(Math.random() * 6) + 1;
+        const sum = d1 + d2;
+        const isOddResult = (sum % 2 !== 0);
+        const resultTypeStr = isOddResult ? '홀' : '짝';
+
+        document.getElementById(`oe-dice-${id}`).innerText = `${diceEmojis[d1]} + ${diceEmojis[d2]} = ${sum} [${resultTypeStr}]`;
+
+        const isWin = (state.userChoice === 'odd' && isOddResult) || (state.userChoice === 'even' && !isOddResult);
+        let msg = document.getElementById(`msg-${id}`);
+        let calc = document.getElementById(`calc-${id}`);
+
+        if (isWin) {
+            msg.innerText = '🎉 예측 성공! 해킹 완료.';
+            msg.className = 'msg-line win-text';
+            calc.innerText = `📈 정산 완료 (+${state.currentBet * 5} P)`;
+            calc.className = 'calc-line win-text';
+        } else {
+            msg.innerText = '❌ 예측 실패... 주파수 이탈.';
+            msg.className = 'msg-line lose-text';
+            calc.innerText = `📉 정산 완료 (-${state.currentBet * 5} P)`;
+            calc.className = 'calc-line lose-text';
+        }
+
+        state.userChoice = null;
+        document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
+        document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
     }
 </script>
 
