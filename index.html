@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP 로얄 카지노 멀티 관제 시스템 (Single Operation Ed.)</title>
+    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
@@ -223,7 +224,7 @@
         .action-btn-secondary:hover:not(:disabled) { background: linear-gradient(to bottom, #6b4c31, #543b24); }
 
         .oe-choice { background: #111e15; color: #8ca394; border: 1px solid #283d2f; padding: 10px 20px; font-size: 14px; }
-        .oe-choice.selected { background: linear-gradient(to bottom, #c49a3c, #805f1d) !important; color: #000 !important; border-color: #ffe6a3 !important; text-shadow: none !important; }
+        .oe-choice.selected { background: linear-gradient(to bottom, #c49a3c, #805f1d) !important; color: #000 !important; border-color: #ffe6a3 !important; text-shadow: none !important; text-shadow: none !important; }
 
         .reset-btn { background-color: rgba(0,0,0,0.5); color: #8c6f27; border: 1px solid #4a3516; width: 100%; margin-top: 15px; padding: 8px; font-size: 12px; box-shadow: none; text-shadow: none; }
         .reset-btn:hover { background-color: #4a3516; color: #fff; }
@@ -233,6 +234,7 @@
 </head>
 <body>
 
+<!-- 상단 패러디 광고 전단지 배너 -->
 <div class="banner-matrix-top">
     <a href="#" class="flash-banner b-type-bluebet size-rect" onclick="alert('⚡️ 과몰입은 건강에 해롭습니다. 건전한 보드게임을 지향합시다!')">
         <span style="font-size: 16px;">🚨 [캠페인] 과도한 게임 금지 센터 [코드 SAFE] 🚨</span>
@@ -248,6 +250,7 @@
     </a>
 </div>
 
+<!-- 좌측 고정 날개 배너 -->
 <div class="side-banner-wing side-left">
     <div class="flash-banner b-type-bluebet size-wing-tall" style="cursor: default;">
         <span style="font-size: 15px; border-bottom: 2px solid #fff; padding-bottom: 5px; margin-bottom: 10px; width: 100%;">📢 NOTICE</span>
@@ -260,6 +263,7 @@
     </a>
 </div>
 
+<!-- 우측 고정 날개 배너 -->
 <div class="side-banner-wing side-right">
     <a href="#" class="flash-banner b-type-praha size-wing-box" onclick="alert('⚡️ 순도 100% 무해한 유머 커뮤니티')">
         <span>🛡️ 클린 웹 1위 🛡️</span>
@@ -271,6 +275,7 @@
     </a>
 </div>
 
+<!-- Supabase 통합 인증 패널 -->
 <div class="auth-container">
     <h3 style="color: #d4af37; font-size: 16px; margin-bottom: 12px;">🔐 카지노 이용자 로그인 센터</h3>
     <div id="auth-logged-out">
@@ -296,6 +301,7 @@
     <button onclick="returnToMainMenu()" style="background: linear-gradient(to bottom, #4a1c1c, #2b0d0d); color: #fca5a5; border: 1px solid #6b2d2d; padding: 7px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">초기 콘솔 패널 리턴</button>
 </header>
 
+<!-- [1단계] 초기 설정 화면 (비로그인 시 입장불가 가이드) -->
 <div id="setup-view" class="setup-screen">
     <h2>👑 SINGLE MONITOR STATION</h2>
     <p id="setup-status-msg" style="color: #f87171; font-size: 13px; margin-bottom: 20px; font-weight: bold;">⚠️ 게임을 플레이하시려면 상단 로그인 센터에서 먼저 로그인을 완료해 주세요.</p>
@@ -319,11 +325,14 @@
         </div>
     </div>
 
+    <!-- 로그인 전에는 disabled 상태 -->
     <button id="open-station-btn" class="global-btn" style="width: 100%; padding: 15px;" onclick="initializeArcadeGrid()" disabled>메인 관제 모니터 개장하기 (로그인 필요)</button>
 </div>
 
+<!-- [2단계] 메인 단일 집중 모니터 뷰포트 -->
 <div id="arcade-viewport" class="arcade-grid hidden"></div>
 
+<!-- 하단 고정 와이드 멀티 배너 -->
 <div class="illegal-banner-zone">
     <a href="#" class="flash-banner b-type-bluebet size-long" onclick="alert('📢 민트초코 반대 연합 공식 입장문 발표!')">
         <span style="font-size: 16px;">🍫 민트초코 반대 총연합회 🍫</span>
@@ -343,9 +352,9 @@
     /* -----------------------------------------------------------------
        SUPABASE CONFIGURATION & AUTH ENGINE
        ----------------------------------------------------------------- */
-    // 💡 [수정 사항] 주소 중간에 섞여 있던 특수 기호(é) 오타를 교정했습니다.
-    const SUPABASE_URL = "https://zoasgzpjlmuegrvxlwgy.supabase.co"; 
-    // 💡 [수정 사항] 제공해주신 새로운 Anon Key값을 적용했습니다.
+    // 💡 주소 중간의 오타(é)를 알파벳 (e)로 완벽하게 교정했습니다.
+    const SUPABASE_URL = "https://zoasgzpjlmuégrvxlwgy.supabase.co"; 
+    // 💡 보내주신 새로운 퍼블리셔블 키를 깔끔하게 세팅했습니다.
     const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq"; 
     
     let supabaseClient = null;
@@ -431,7 +440,6 @@
         
         if(!inputId || !password) return alert("아이디와 비밀번호를 모두 입력하십시오.");
 
-        // 패치 완료: "users" 테이블 명시 지정
         const TARGET_TABLE_NAME = "users"; 
 
         document.getElementById('ctrl-1').innerHTML = "<span>검증 중...</span>";
@@ -506,6 +514,7 @@
                     <h3 id="title-${id}" class="table-title-text">단일 집중 오퍼레이터실 (선택 대기)</h3>
                 </div>
                 
+                <!-- 게임 선택 레이어 -->
                 <div id="select-layer-${id}" class="game-selector">
                     <p style="color:#ebd6a0; font-size:13px; margin-bottom:10px;">플레이할 보드게임 테이블을 지정해 주세요.</p>
                     <button class="action-btn-primary" style="width:90%; padding:11px; margin-bottom:5px;" onclick="setupGame(${id}, 'blackjack')">♣️ 블랙잭 게임 테이블 오픈</button>
@@ -513,12 +522,14 @@
                     <button class="action-btn-primary" style="width:90%; padding:11px;" onclick="setupGame(${id}, 'roulette')">🎡 로얄 룰렛 휠 레이아웃 오픈</button>
                 </div>
 
+                <!-- 실시간 게임 진행 레이어 -->
                 <div id="play-layer-${id}" class="hidden" style="display:flex; flex-direction:column; flex-grow:1;">
                     <div class="bet-box">
                         <label>💵 USER REAL-TIME BET CHIPS : </label>
                         <input type="number" id="bet-${id}" value="100" min="1"> <span>CHIPS</span>
                     </div>
 
+                    <!-- 블랙잭 보드 -->
                     <div id="bj-board-${id}" class="hidden">
                         <div class="game-section">
                             <h4>딜러 핸드 (Dealer Box)</h4>
@@ -532,6 +543,7 @@
                         </div>
                     </div>
 
+                    <!-- 홀짝 보드 -->
                     <div id="oe-board-${id}" class="hidden">
                         <div class="game-section" style="text-align:center;">
                             <h4>직접 배팅 포지션 선택</h4>
@@ -544,6 +556,7 @@
                         </div>
                     </div>
 
+                    <!-- 룰렛 보드 -->
                     <div id="ro-board-${id}" class="hidden">
                         <div class="game-section">
                             <div class="ro-board-grid">
