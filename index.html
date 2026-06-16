@@ -361,6 +361,7 @@
     
     let supabaseClient = null;
     let loggedInUserNickname = ""; 
+    let currentUserPoint = 0;
 
     if(SUPABASE_URL && SUPABASE_ANON_KEY) {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -798,10 +799,12 @@
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 나의 직접 배팅 배당금 정산 완료 (+${state.currentBet * 10} CHIPS)`;
             calc.className = 'calc-line win-text';
+            await syncPoint(betAmount, true, 2);
         } else if (status === 'lose') {
             msg.className = 'msg-line lose-text';
             calc.innerText = `📉 나의 직접 배팅 손실액 정산 완료 (-${state.currentBet * 5} CHIPS)`;
             calc.className = 'calc-line lose-text';
+            await syncPoint(betAmount, false, 0, 5);
         } else {
             calc.innerText = '결과 정산: 변동 없음 (0 CHIPS)';
             calc.className = 'calc-line';
@@ -850,9 +853,11 @@
         let calc = document.getElementById(`calc-${id}`);
 
         if (isWin) {
+            await syncPoint(parseInt(document.getElementById(`bet-${id}`).value), true, payoutFactor);
             msg.innerText = '🎉 축하합니다! 직접 배팅하신 포지션이 적중했습니다.'; msg.className = 'msg-line win-text';
             calc.innerText = `📈 배당 정산 결과 (+${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line win-text';
         } else {
+            await syncPoint(parseInt(document.getElementById(`bet-${id}`).value), false, 0, lossFactor);
             msg.innerText = '❌ 적중 실패. 하우스 포지션입니다.'; msg.className = 'msg-line lose-text';
             calc.innerText = `📉 손실 정산 결과 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
         }
@@ -966,10 +971,12 @@
 
         if (isWin) {
             let payoutFactor = (type === 'number') ? 10 : 2;
+            await syncPoint(parseInt(document.getElementById(`bet-${id}`).value), true, payoutFactor);
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 배당 적중 성공! 직접 배팅 칩 정산 완료 (+${state.currentBet * payoutFactor} CHIPS)`;
             calc.className = 'calc-line win-text';
         } else {
+            await syncPoint(parseInt(document.getElementById(`bet-${id}`).value), false, 0, lossFactor);
             msg.className = 'msg-line lose-text';
             calc.innerText = `📉 적중 실패. 직접 배팅 칩 회수 정산 완료 (-${state.currentBet * lossFactor} CHIPS)`;
             calc.className = 'calc-line lose-text';
@@ -977,6 +984,16 @@
         
         triggerAutomaticReturn(id);
     }
+    
+    async function syncPoint(amount, isWin, payoutFactor, lossFactor = 5) {
+    const change = isWin ? (amount * payoutFactor) : -(amount * lossFactor);
+    const newPoint = currentUserPoint + change;
+    const { data } = await supabase.from('users').update({ point: newPoint }).eq('login_id', loggedInUserNickname).select().single();
+    if (data) {
+        currentUserPoint = data.point;
+        document.getElementById('user-display-point').innerText = currentUserPoint;
+    }
+}
 </script>
 
 </body>
