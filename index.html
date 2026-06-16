@@ -427,13 +427,6 @@
 
         // [368번째 줄] 💡 중요! 이미지 속 사용자가 정의한 일반 데이터 테이블 이름을 여기에 적어주세요.
         const TARGET_TABLE_NAME = "users"; 
-
-        if (TARGET_TABLE_NAME === "users") {
-            return alert("❌ 코드 소스 내 [TARGET_TABLE_NAME] (368번째 줄)을 실제 테이블 이름으로 수정해야 로그인이 작동합니다.");
-        }
-
-        document.getElementById('ctrl-1').innerHTML = "<span>검증 중...</span>";
-
         // Supabase 일반 데이터 테이블 조회 (login_id, password 평문 비교)
         const { data, error } = await supabaseClient
             .from(TARGET_TABLE_NAME)
