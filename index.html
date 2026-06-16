@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP 로얄 카지노 멀티 관제 시스템 (Single Operation Ed.)</title>
+    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* 기본 테마 및 전체 레이아웃 마감 */
         body {
             font-family: 'Georgia', 'Times New Roman', 'Malgun Gothic', serif;
             background-color: #030704; 
@@ -31,9 +31,7 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* -----------------------------------------------------------------
-           Supabase 로그인/회원가입 컴포넌트 스펙
-           ----------------------------------------------------------------- */
+        /* Supabase 로그인 컴포넌트 */
         .auth-container {
             max-width: 500px;
             margin: 0 auto 20px auto;
@@ -75,9 +73,7 @@
             gap: 15px;
         }
 
-        /* -----------------------------------------------------------------
-           신고 방지용 무한 플래시 배너 매트릭스
-           ----------------------------------------------------------------- */
+        /* 무한 플래시 배너 매트릭스 */
         .banner-matrix-top {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -85,8 +81,6 @@
             max-width: 1200px;
             margin: 0 auto 25px auto;
         }
-
-        /* 고정형 사이드 날개 배너 (좌/우) */
         .side-banner-wing {
             position: fixed;
             top: 100px;
@@ -97,8 +91,6 @@
         }
         .side-left { left: 15px; width: 140px; }
         .side-right { right: 15px; width: 140px; }
-
-        /* 하단 고정 와이드 멀티바 */
         .illegal-banner-zone {
             position: fixed;
             bottom: 0;
@@ -116,7 +108,6 @@
             box-sizing: border-box;
             overflow-x: auto;
         }
-
         .flash-banner {
             border-radius: 3px;
             display: flex;
@@ -133,63 +124,33 @@
             text-align: center;
             padding: 8px;
         }
-        .banner-subtext {
-            font-size: 11px;
-            letter-spacing: 1px;
-            margin-top: 3px;
-            opacity: 0.95;
-            font-weight: bold;
-        }
-
+        .banner-subtext { font-size: 11px; letter-spacing: 1px; margin-top: 3px; opacity: 0.95; font-weight: bold; }
         .b-type-bluebet { animation: blinkBlueBet 0.35s infinite alternate; }
         @keyframes blinkBlueBet {
             0% { background: #0022ff; color: #fff; border-color: #ff0055; box-shadow: inset 0 0 10px #000; }
             100% { background: #ff0044; color: #ffff00; border-color: #fff; box-shadow: 0 0 15px #ff0044; }
         }
-
         .b-type-praha { animation: blinkPraha 0.5s infinite steps(2); }
         @keyframes blinkPraha {
             0% { background: #111; color: #d4af37; border-color: #9c7323; }
             100% { background: #3d2c04; color: #fff; border-color: #ffff00; box-shadow: 0 0 12px #d4af37; }
         }
-
         .b-type-tenbet { animation: blinkTenbet 0.2s infinite linear, shake 0.15s infinite; }
         @keyframes blinkTenbet {
             0%, 100% { background: #00f0ff; color: #000; border-color: #fff; }
             50% { background: #000bbd; color: #00ffff; border-color: #00f0ff; box-shadow: 0 0 20px #00f0ff; }
         }
-        @keyframes shake {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px) translateX(1px); }
-        }
-
+        @keyframes shake { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px) translateX(1px); } }
         .b-type-ministop { animation: blinkMini 0.3s infinite linear; }
-        @keyframes blinkMini {
-            0% { background: #ffea00; color: #111; border-color: #ff0000; }
-            50% { background: #ff3c00; color: #fff; border-color: #ffea00; }
-            100% { background: #111; color: #ffea00; border-color: #fff; }
-        }
-
+        @keyframes blinkMini { 0% { background: #ffea00; color: #111; border-color: #ff0000; } 50% { background: #ff3c00; color: #fff; border-color: #ffea00; } 100% { background: #111; color: #ffea00; border-color: #fff; } }
         .b-type-wolf { animation: blinkWolf 0.15s infinite alternate; }
-        @keyframes blinkWolf {
-            0% { background: #ff0000; color: #fff; border-color: #fff; font-size: 16px; }
-            100% { background: #000000; color: #ff0000; border-color: #ff0000; font-size: 17px; text-shadow: 0 0 8px #ff0000; }
-        }
-
+        @keyframes blinkWolf { 0% { background: #ff0000; color: #fff; border-color: #fff; font-size: 16px; } 100% { background: #000000; color: #ff0000; border-color: #ff0000; font-size: 17px; text-shadow: 0 0 8px #ff0000; } }
         .size-rect { width: 100%; height: 75px; }
         .size-long { width: 280px; height: 75px; }
         .size-wing-box { width: 140px; height: 110px; font-size: 12px; }
-        .size-wing-tall { 
-            width: 140px; 
-            height: 250px; 
-            font-size: 13px; 
-            line-height: 1.6;
-            padding: 15px 10px;
-        }
+        .size-wing-tall { width: 140px; height: 250px; font-size: 13px; line-height: 1.6; padding: 15px 10px; }
 
-        /* -----------------------------------------------------------------
-           기본 단일 모니터 게임용 스타일링 셋
-           ----------------------------------------------------------------- */
+        /* 게임 스테이션 */
         .setup-screen {
             max-width: 600px;
             margin: 20px auto;
@@ -201,31 +162,19 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.7);
         }
         .setup-screen h2 { color: #d4af37; font-size: 22px; margin-bottom: 15px; }
-        .setup-screen select {
-            background-color: #08120b; color: #d4af37; border: 1px solid #8c6f27;
-            padding: 12px; font-size: 15px; font-weight: bold; border-radius: 4px;
-            width: 100%; margin: 15px 0 25px 0; text-align: center; outline: none;
-        }
-
-        .game-guide-box {
-            text-align: left; background-color: rgba(0, 0, 0, 0.6);
-            border: 1px solid #70551c; border-radius: 4px; padding: 18px; margin-bottom: 20px; font-size: 13px; line-height: 1.7;
-        }
+        .game-guide-box { text-align: left; background-color: rgba(0, 0, 0, 0.6); border: 1px solid #70551c; border-radius: 4px; padding: 18px; margin-bottom: 20px; font-size: 13px; line-height: 1.7; }
         .game-guide-box h4 { color: #d4af37; border-bottom: 1px solid #70551c; padding-bottom: 6px; }
         .guide-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #3a2e14; }
         .guide-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .guide-tag { font-weight: bold; padding: 3px 8px; border-radius: 3px; font-size: 11px; margin-right: 8px; display: inline-block; color: #ebd6a0; background-color: #2a1b10; border: 1px solid #543b24; }
 
-        /* 단일 모니터 집중 뷰용 너비 */
         .arcade-grid { display: grid; grid-template-columns: 1fr; width: 100%; max-width: 650px; margin: 0 auto; }
-
         .table-slot {
             background: linear-gradient(135deg, #0b1f13 0%, #040d08 100%); 
             border: 4px solid #4a2f16; border-radius: 6px; padding: 25px;
             display: flex; flex-direction: column; transition: all 0.3s ease; position: relative;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 35px rgba(0,0,0,0.9), 0 0 0 1px #8c5b2b;
         }
-        
         .table-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #543b24; padding-bottom: 10px; margin-bottom: 15px; gap: 10px; }
         .table-id { font-size: 12px; font-weight: bold; background: linear-gradient(to bottom, #4a2f16, #2d1a0e); padding: 4px 10px; border-radius: 2px; color: #d4af37; border: 1px solid #704720; white-space: nowrap; }
         .table-title-text { font-size: 18px; font-weight: bold; margin: 0; text-align: right; color: #d4af37; text-shadow: 0 2px 2px #000; }
@@ -235,10 +184,6 @@
         .table-slot.roulette-theme .table-title-text { color: #e7cb85; }  
 
         .game-selector { display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; padding: 15px 0; }
-        .name-input-box { width: 90%; text-align: left; margin-bottom: 8px; }
-        .name-input-box label { font-size: 11px; color: #8c6f27; display: block; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; }
-        .name-input-box input { width: 100%; background-color: #040a06; border: 1px solid #543b24; color: #e2e8f0; padding: 9px; border-radius: 4px; box-sizing: border-box; font-size: 13px; outline: none; }
-
         .bet-box { background-color: rgba(0, 0, 0, 0.4); padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 14px; border: 1px solid #4a3816; text-align: center; }
         .bet-box label { color: #b89030; font-weight: bold; }
         .bet-box input { background-color: #000; border: 1px solid #543b24; color: #d4af37; padding: 5px; width: 100px; text-align: center; font-size: 14px; font-weight: bold; border-radius: 4px; outline: none; }
@@ -261,6 +206,7 @@
 
         .msg-line { font-size: 14px; font-weight: bold; margin: 12px 0 6px 0; min-height: 22px; color: #94a3b8; text-align: center; }
         .calc-line { font-size: 15px; font-weight: bold; min-height: 24px; text-align: center; }
+        .loop-notice-line { font-size: 12px; color: #ef4444; text-align: center; font-weight: bold; margin-top: 5px; min-height: 18px; }
 
         .win-text { color: #34d399 !important; text-shadow: 0 0 6px rgba(52,211,153,0.3); } 
         .lose-text { color: #f87171 !important; text-shadow: 0 0 6px rgba(248,113,113,0.3); } 
@@ -269,7 +215,7 @@
         button:disabled { background: #131c16 !important; color: #3d4a40 !important; cursor: not-allowed; box-shadow: none; text-shadow: none; }
         
         .global-btn { background: linear-gradient(to bottom, #c49a3c, #805f1d); color: #111; font-size: 14px; padding: 10px 20px; border: 1px solid #eec875; text-shadow: none; }
-        .global-btn:hover { background: linear-gradient(to bottom, #eec875, #c49a3c); }
+        .global-btn:hover:not(:disabled) { background: linear-gradient(to bottom, #eec875, #c49a3c); }
 
         .action-btn-primary { background: linear-gradient(to bottom, #2d5238, #162e1e); color: #ebd6a0; border: 1px solid #42704e; }
         .action-btn-primary:hover:not(:disabled) { background: linear-gradient(to bottom, #3d6e4b, #2d5238); }
@@ -288,6 +234,7 @@
 </head>
 <body>
 
+<!-- 상단 패러디 광고 전단지 배너 -->
 <div class="banner-matrix-top">
     <a href="#" class="flash-banner b-type-bluebet size-rect" onclick="alert('⚡️ 과몰입은 건강에 해롭습니다. 건전한 보드게임을 지향합시다!')">
         <span style="font-size: 16px;">🚨 [캠페인] 과도한 게임 금지 센터 [코드 SAFE] 🚨</span>
@@ -303,19 +250,20 @@
     </a>
 </div>
 
+<!-- 좌측 고정 날개 배너 -->
 <div class="side-banner-wing side-left">
     <div class="flash-banner b-type-bluebet size-wing-tall" style="cursor: default;">
         <span style="font-size: 15px; border-bottom: 2px solid #fff; padding-bottom: 5px; margin-bottom: 10px; width: 100%;">📢 NOTICE</span>
         <span style="font-weight: 800; color: #ffff00;">이 사이트는 자캐커뮤를 목적으로 제작된 사이트 입니다.</span>
         <span style="font-size: 11px; font-weight: normal; margin-top: 10px; opacity: 0.9;">실제 금전 거래나 사행성 요소가 전혀 없는 가상의 웹 텍스트 보드게임 테이블 레이아웃 시뮬레이터입니다.</span>
     </div>
-    
     <a href="#" class="flash-banner b-type-tenbet size-wing-box" onclick="alert('⚡️ 개발자 후원 감사 보너스!')">
         <span>⚡️ 밤샘 개발 ⚡️</span>
         <span style="font-size:10px; color:#fff; margin-top:5px;">가입 시 아이스 아메리카노<br>샷 추가 10% 돌발 15%<br>디카페인 변경 [2580]</span>
     </a>
 </div>
 
+<!-- 우측 고정 날개 배너 -->
 <div class="side-banner-wing side-right">
     <a href="#" class="flash-banner b-type-praha size-wing-box" onclick="alert('⚡️ 순도 100% 무해한 유머 커뮤니티')">
         <span>🛡️ 클린 웹 1위 🛡️</span>
@@ -327,21 +275,22 @@
     </a>
 </div>
 
+<!-- ───────────────── [변경] Supabase 통합 인증 패널 ───────────────── -->
 <div class="auth-container">
-    <h3 style="color: #d4af37; font-size: 16px; margin-bottom: 12px;">🔐 SUPABASE 가상 보드게임 보안 통제소</h3>
+    <h3 style="color: #d4af37; font-size: 16px; margin-bottom: 12px;">🔐 카지노 이용자 로그인 센터</h3>
     <div id="auth-logged-out">
         <div class="auth-input-group">
-            <input type="email" id="auth-email" placeholder="이메일 주소">
+            <input type="text" id="auth-username" placeholder="아이디">
             <input type="password" id="auth-password" placeholder="비밀번호">
         </div>
         <div class="auth-btn-zone">
             <button class="action-btn-primary" onclick="handleSignIn()">로그인</button>
-            <button class="action-btn-secondary" onclick="handleSignUp()">가상 회원가입</button>
+            <button class="action-btn-secondary" onclick="handleSignUpInfo()">가상 회원가입</button>
         </div>
     </div>
     <div id="auth-logged-in" class="hidden">
         <div class="user-logged-info">
-            <span>🟢 관제사 자격 확인됨: <span id="user-display-email" style="color:#fff;"></span></span>
+            <span>🟢 환영합니다, <span id="user-display-name" style="color:#fff; font-size:15px; text-decoration: underline;"></span>님</span>
             <button class="action-btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="handleSignOut()">로그아웃</button>
         </div>
     </div>
@@ -349,12 +298,13 @@
 
 <header id="arcade-header" class="hidden">
     <h1>👑 ROYAL CASINO SINGLE CONSOLE MONITOR</h1>
-    <button onclick="location.reload()" style="background: linear-gradient(to bottom, #4a1c1c, #2b0d0d); color: #fca5a5; border: 1px solid #6b2d2d; padding: 7px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">초기 콘솔 패널 리턴</button>
+    <button onclick="returnToMainMenu()" style="background: linear-gradient(to bottom, #4a1c1c, #2b0d0d); color: #fca5a5; border: 1px solid #6b2d2d; padding: 7px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;">초기 콘솔 패널 리턴</button>
 </header>
 
+<!-- [1단계] 초기 설정 화면 (비로그인 시 입장불가 가이드) -->
 <div id="setup-view" class="setup-screen">
     <h2>👑 SINGLE MONITOR STATION</h2>
-    <p style="color: #839185; font-size: 13px; margin-bottom: 20px;">집중 관제 및 모의 배팅을 수행할 전용 보드 게임룸을 1개 개장합니다.</p>
+    <p id="setup-status-msg" style="color: #f87171; font-size: 13px; margin-bottom: 20px; font-weight: bold;">⚠️ 게임을 플레이하시려면 상단 로그인 센터에서 먼저 로그인을 완료해 주세요.</p>
     
     <div class="game-guide-box">
         <h4 style="margin-bottom: 12px; font-size: 13px;">🎰 ROYAL CASINO OPERATIONS</h4>
@@ -375,11 +325,14 @@
         </div>
     </div>
 
-    <button class="global-btn" style="width: 100%; padding: 15px;" onclick="initializeArcadeGrid()">1번 메인 관제 모니터 개장하기</button>
+    <!-- 로그인 전에는 disabled 상태 -->
+    <button id="open-station-btn" class="global-btn" style="width: 100%; padding: 15px;" onclick="initializeArcadeGrid()" disabled>메인 관제 모니터 개장하기 (로그인 필요)</button>
 </div>
 
+<!-- [2단계] 메인 단일 집중 모니터 뷰포트 -->
 <div id="arcade-viewport" class="arcade-grid hidden"></div>
 
+<!-- 하단 고정 와이드 멀티 배너 -->
 <div class="illegal-banner-zone">
     <a href="#" class="flash-banner b-type-bluebet size-long" onclick="alert('📢 민트초코 반대 연합 공식 입장문 발표!')">
         <span style="font-size: 16px;">🍫 민트초코 반대 총연합회 🍫</span>
@@ -399,86 +352,122 @@
     /* -----------------------------------------------------------------
        SUPABASE CONFIGURATION & AUTH ENGINE
        ----------------------------------------------------------------- */
-    const SUPABASE_URL = "https://zoasgzpjlmuégrvxlwgy.supabase.co"; // 여기에 Supabase URL 대입
-    const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq"; // 여기에 Anon Key 대입
+    const SUPABASE_URL = "https://zoasgzpjlmuégrvxlwgy.supabase.co"; 
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // 여기에 본인의 [Publishable key (anon)]를 대입해 주세요.
     
     let supabaseClient = null;
-    if(SUPABASE_URL !== "YOUR_SUPABASE_URL") {
+    let loggedInUserNickname = ""; // 테이블 명칭 자동 할당용 전역 변수
+
+    if(SUPABASE_URL && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    // 세션 감지 및 UI 스위칭
     window.addEventListener('DOMContentLoaded', () => {
         if(supabaseClient) {
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
-                    showLoggedIn(session.user.email);
+                    processLoginSuccess(session.user.email);
                 } else {
-                    showLoggedOut();
+                    processLogoutState();
                 }
             });
         }
     });
 
-    function showLoggedIn(email) {
+    function processLoginSuccess(email) {
+        // 이메일의 ID 영역(@ 앞부분)만 추출하여 가상 닉네임으로 활용
+        loggedInUserNickname = email.split('@')[0];
+        
         document.getElementById('auth-logged-out').classList.add('hidden');
         document.getElementById('auth-logged-in').classList.remove('hidden');
-        document.getElementById('user-display-email').innerText = email;
+        document.getElementById('user-display-name').innerText = loggedInUserNickname;
+
+        // 로그인 성공 시에만 가이드 알림창 변경 및 모니터 개장 버튼 활성화
+        const statusMsg = document.getElementById('setup-status-msg');
+        statusMsg.innerText = "🟢 관제사 자격이 인증되었습니다. 메인 모니터를 개장할 수 있습니다.";
+        statusMsg.style.color = "#34d399";
+        
+        const openBtn = document.getElementById('open-station-btn');
+        openBtn.removeAttribute('disabled');
+        openBtn.innerText = "메인 관제 모니터 개장하기";
     }
 
-    function showLoggedOut() {
+    function processLogoutState() {
+        loggedInUserNickname = "";
         document.getElementById('auth-logged-out').classList.remove('hidden');
         document.getElementById('auth-logged-in').classList.add('hidden');
+
+        const statusMsg = document.getElementById('setup-status-msg');
+        if(statusMsg) {
+            statusMsg.innerText = "⚠️ 게임을 플레이하시려면 상단 로그인 센터에서 먼저 로그인을 완료해 주세요.";
+            statusMsg.style.color = "#f87171";
+        }
+        
+        const openBtn = document.getElementById('open-station-btn');
+        if(openBtn) {
+            openBtn.setAttribute('disabled', 'true');
+            openBtn.innerText = "메인 관제 모니터 개장하기 (로그인 필요)";
+        }
+        returnToMainMenu();
     }
 
-    async function handleSignUp() {
-        if(!supabaseClient) return alert("Supabase API 주소와 Anon Key를 먼저 설정해주세요!");
-        const email = document.getElementById('auth-email').value;
-        const password = document.getElementById('auth-password').value;
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        if(error) alert("회원가입 실패: " + error.message);
-        else alert("가상 관제사 등록이 완료되었습니다. (이메일 확인 필요 또는 즉시 로그인)");
+    function handleSignUpInfo() {
+        alert("회원가입은 가상 카지노 관리자에게 직접 문의하세요.");
     }
 
     async function handleSignIn() {
-        if(!supabaseClient) return alert("Supabase API 주소와 Anon Key를 먼저 설정해주세요!");
-        const email = document.getElementById('auth-email').value;
+        if(!supabaseClient || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY") {
+            return alert("Supabase Anon Key가 정상적으로 설정되지 않았습니다. 소스코드 설정을 확인해 주세요.");
+        }
+        const inputId = document.getElementById('auth-username').value.trim();
         const password = document.getElementById('auth-password').value;
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        
+        if(!inputId || !password) return alert("아이디와 비밀번호를 모두 입력하십시오.");
+
+        // 아이디 단독 입력을 위해 내부 구동 시 가상 이메일 포맷으로 래핑 처리
+        const pseudoEmail = inputId.includes('@') ? inputId : `${inputId}@virtualcasino.com`;
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: pseudoEmail, password: password });
         if(error) alert("로그인 실패: " + error.message);
-        else alert("카지노 관제실 세션 인가가 정상 승인되었습니다.");
+        else alert(`카지노 오퍼레이터실 입장 세션이 인가되었습니다.`);
     }
 
     async function handleSignOut() {
         if(!supabaseClient) return;
         await supabaseClient.auth.signOut();
-        alert("관제실 로그아웃 완료.");
+        alert("관제실 세션을 안전하게 종료하고 로그아웃되었습니다.");
     }
 
 
     /* -----------------------------------------------------------------
-       GAME ENGINE (SINGLE TARGET INTERFACE)
+       GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
        ----------------------------------------------------------------- */
-    let totalTables = 1;
     const tableStates = { 1: { type: 'none' } }; 
-
     const suits = ['♠', '◆', '♥', '♣'];
     const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     const diceEmojis = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-
     const rouletteNumbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 
     function initializeArcadeGrid() {
+        if(!loggedInUserNickname) {
+            alert("보안 인가가 만료되었거나 비로그인 상태입니다.");
+            return;
+        }
         document.getElementById('setup-view').classList.add('hidden');
         document.getElementById('arcade-header').classList.remove('hidden');
         
         const viewport = document.getElementById('arcade-viewport');
         viewport.innerHTML = ''; 
         viewport.classList.remove('hidden');
-
-        // 단 1개의 모니터 콘솔 바인딩
         viewport.innerHTML = createSlotHTML(1);
+    }
+
+    function returnToMainMenu() {
+        document.getElementById('arcade-viewport').classList.add('hidden');
+        document.getElementById('arcade-header').classList.add('hidden');
+        document.getElementById('setup-view').classList.remove('hidden');
+        tableStates[1] = { type: 'none' };
     }
 
     function createSlotHTML(id) {
@@ -486,25 +475,25 @@
             <div id="slot-${id}" class="table-slot">
                 <div class="table-header">
                     <span class="table-id">MAIN-CONSOLE</span>
-                    <h3 id="title-${id}" class="table-title-text">단일 집중 오퍼레이터실 (대기)</h3>
+                    <h3 id="title-${id}" class="table-title-text">단일 집중 오퍼레이터실 (선택 대기)</h3>
                 </div>
                 
+                <!-- 게임 선택 레이어 -->
                 <div id="select-layer-${id}" class="game-selector">
-                    <div class="name-input-box">
-                        <label for="slot-name-${id}">👤 룸 테이블 커스텀 레이블 명칭</label>
-                        <input type="text" id="slot-name-${id}" placeholder="예: VIP 1번방" maxlength="15">
-                    </div>
+                    <p style="color:#ebd6a0; font-size:13px; margin-bottom:10px;">플레이할 보드게임 테이블을 지정해 주세요.</p>
                     <button class="action-btn-primary" style="width:90%; padding:11px; margin-bottom:5px;" onclick="setupGame(${id}, 'blackjack')">♣️ 블랙잭 게임 테이블 오픈</button>
                     <button class="action-btn-primary" style="width:90%; padding:11px; margin-bottom:5px;" onclick="setupGame(${id}, 'oddeven')">🎲 다이스 홀짝 배팅 플레이 오픈</button>
                     <button class="action-btn-primary" style="width:90%; padding:11px;" onclick="setupGame(${id}, 'roulette')">🎡 로얄 룰렛 휠 레이아웃 오픈</button>
                 </div>
 
+                <!-- 실시간 게임 진행 레이어 -->
                 <div id="play-layer-${id}" class="hidden" style="display:flex; flex-direction:column; flex-grow:1;">
                     <div class="bet-box">
                         <label>💵 USER REAL-TIME BET CHIPS : </label>
                         <input type="number" id="bet-${id}" value="100" min="1"> <span>CHIPS</span>
                     </div>
 
+                    <!-- 블랙잭 보드 -->
                     <div id="bj-board-${id}" class="hidden">
                         <div class="game-section">
                             <h4>딜러 핸드 (Dealer Box)</h4>
@@ -512,12 +501,13 @@
                             <div id="bj-dscore-${id}" class="score">점수: 0</div>
                         </div>
                         <div class="game-section">
-                            <h4>나의 플레이어 핸드 (My Box)</h4>
+                            <h4>나의 플레이어 핸드 (${loggedInUserNickname} Box)</h4>
                             <div id="bj-pcards-${id}" class="display-output">-</div>
                             <div id="bj-pscore-${id}" class="score">점수: 0</div>
                         </div>
                     </div>
 
+                    <!-- 홀짝 보드 -->
                     <div id="oe-board-${id}" class="hidden">
                         <div class="game-section" style="text-align:center;">
                             <h4>직접 배팅 포지션 선택</h4>
@@ -530,6 +520,7 @@
                         </div>
                     </div>
 
+                    <!-- 룰렛 보드 -->
                     <div id="ro-board-${id}" class="hidden">
                         <div class="game-section">
                             <div class="ro-board-grid">
@@ -561,42 +552,41 @@
                         </div>
                     </div>
 
-                    <div id="msg-${id}" class="msg-line">배팅금을 입력한 후 게임 플레이 버튼을 작동시키십시오.</div>
+                    <div id="msg-${id}" class="msg-line">포인트를 베팅해야 게임을 진행할 수 있습니다.</div>
                     <div id="calc-${id}" class="calc-line"></div>
+                    <div id="loop-notice-${id}" class="loop-notice-line"></div>
                     <div id="ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
 
-                    <button class="reset-btn" onclick="resetSlot(${id})">⚙️ 모니터 마감 및 콘솔 초기화</button>
+                    <button class="reset-btn" onclick="backToGameSelection(${id})">⚙️ 상위 게임 선택창으로 강제 탈출</button>
                 </div>
             </div>
         `;
     }
 
     function setupGame(id, type) {
-        const nameInput = document.getElementById(`slot-name-${id}`);
-        let customName = nameInput.value.trim() || `포커스 룸`;
-
         document.getElementById(`select-layer-${id}`).classList.add('hidden');
         document.getElementById(`play-layer-${id}`).classList.remove('hidden');
         
         const slot = document.getElementById(`slot-${id}`);
         const title = document.getElementById(`title-${id}`);
         
-        tableStates[id] = { type: type, isGameOver: true, currentBet: 0, customName: customName };
+        // 로그인 정보 기반 자동 타이틀 셋업 (지정 불가)
+        tableStates[id] = { type: type, isGameOver: true, currentBet: 0, customName: loggedInUserNickname };
 
         if (type === 'blackjack') {
             slot.classList.add('blackjack-theme');
-            title.innerText = `${customName} [BLACKJACK]`;
+            title.innerText = `🎰 ${loggedInUserNickname} 전용 룸 [BLACKJACK]`;
             document.getElementById(`bj-board-${id}`).classList.remove('hidden');
             bjRenderControls(id, 'ready');
         } else if (type === 'oddeven') {
             slot.classList.add('oddeven-theme');
-            title.innerText = `${customName} [DICE O/E]`;
+            title.innerText = `🎰 ${loggedInUserNickname} 전용 룸 [DICE O/E]`;
             document.getElementById(`oe-board-${id}`).classList.remove('hidden');
             tableStates[id].userChoice = null;
             oeRenderControls(id, 'ready');
         } else if (type === 'roulette') {
             slot.classList.add('roulette-theme');
-            title.innerText = `${customName} [ROULETTE]`;
+            title.innerText = `🎰 ${loggedInUserNickname} 전용 룸 [ROULETTE]`;
             document.getElementById(`ro-board-${id}`).classList.remove('hidden');
             tableStates[id].currentRotation = 0;
             roTypeChange(id);
@@ -604,25 +594,57 @@
         }
     }
 
-    function resetSlot(id) {
+    // 루프 핵심: 라운드 마감 시 선택창 롤백 핸들러
+    function backToGameSelection(id) {
         const slot = document.getElementById(`slot-${id}`);
         slot.className = 'table-slot';
-        document.getElementById(`title-${id}`).innerText = '단일 집중 오퍼레이터실 (대기)';
+        document.getElementById(`title-${id}`).innerText = '단일 집중 오퍼레이터실 (선택 대기)';
         document.getElementById(`play-layer-${id}`).classList.add('hidden');
         document.getElementById(`bj-board-${id}`).classList.add('hidden');
         document.getElementById(`oe-board-${id}`).classList.add('hidden');
         document.getElementById(`ro-board-${id}`).classList.add('hidden');
-        document.getElementById(`select-layer-${id}`).classList.remove('hidden');
         
-        document.getElementById(`slot-name-${id}`).value = "";
+        document.getElementById(`msg-${id}`).innerText = "포인트를 베팅해야 게임을 진행할 수 있습니다.";
+        document.getElementById(`msg-${id}`).className = "msg-line";
+        document.getElementById(`calc-${id}`).innerText = "";
+        document.getElementById(`loop-notice-${id}`).innerText = "";
+        
+        document.getElementById(`select-layer-${id}`).classList.remove('hidden');
         tableStates[id] = { type: 'none' };
     }
 
-    /* 블랙잭 모듈 */
+    function triggerAutomaticReturn(id) {
+        let countdown = 3;
+        const noticeEl = document.getElementById(`loop-notice-${id}`);
+        noticeEl.innerText = `🔄 판돈 정산 완료: ${countdown}초 후 게임 선택창으로 강제 리턴됩니다.`;
+        
+        const interval = setInterval(() => {
+            countdown--;
+            if(countdown <= 0) {
+                clearInterval(interval);
+                backToGameSelection(id);
+            } else {
+                noticeEl.innerText = `🔄 판돈 정산 완료: ${countdown}초 후 게임 선택창으로 강제 리턴됩니다.`;
+            }
+        }, 1000);
+    }
+
+    // 포인트 유효성 내부 인터셉터 검증기
+    function validateBettingChips(id) {
+        const betInput = document.getElementById(`bet-${id}`);
+        const betVal = parseInt(betInput.value);
+        if (isNaN(betVal) || betVal <= 0) {
+            alert('❌ 포인트 베팅을 하지 않으면 게임을 진행할 수 없습니다!');
+            return false;
+        }
+        return betVal;
+    }
+
+    /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
         if (stage === 'ready') {
-            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">배팅칩 제출 및 직접 플레이 개시</button>`;
+            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">포인트 배팅 및 직접 블랙잭 플레이 개시</button>`;
         } else if (stage === 'play') {
             ctrl.innerHTML = `
                 <button class="action-btn-primary" style="padding:10px 25px;" onclick="bjHit(${id})">히트 (Hit)</button>
@@ -632,12 +654,12 @@
     }
 
     function bjStart(id) {
-        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
-        if (isNaN(betVal) || betVal <= 0) return alert('정확한 배팅 칩을 입력하십시오.');
+        const validatedBet = validateBettingChips(id);
+        if(!validatedBet) return;
 
         const state = tableStates[id];
         state.isGameOver = false;
-        state.currentBet = betVal;
+        state.currentBet = validatedBet;
 
         state.deck = [];
         for (let suit of suits) {
@@ -733,9 +755,12 @@
             calc.innerText = '결과 정산: 변동 없음 (0 CHIPS)';
             calc.className = 'calc-line';
         }
+        
+        // 한 판 종료 시 자동 이동 인터셉터 가동
+        triggerAutomaticReturn(id);
     }
 
-    /* 홀짝 모듈 */
+    /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
         document.getElementById(`ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">직접 배팅 결과 확인 (Roll)</button>`;
     }
@@ -759,11 +784,11 @@
 
     function oeRoll(id) {
         const state = tableStates[id];
-        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
-        if (isNaN(betVal) || betVal <= 0) return alert('정확한 배팅 칩을 입력하십시오.');
+        const validatedBet = validateBettingChips(id);
+        if(!validatedBet) return;
         if (!state.userChoice) return alert('배팅할 홀/짝 구역을 먼저 선택해 주세요.');
 
-        state.currentBet = betVal;
+        state.currentBet = validatedBet;
         const d1 = Math.floor(Math.random() * 6) + 1;
         const d2 = Math.floor(Math.random() * 6) + 1;
         const sum = d1 + d2;
@@ -785,9 +810,12 @@
         state.userChoice = null;
         document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
         document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
+        
+        // 한 판 종료 시 자동 이동 인터셉터 가동
+        triggerAutomaticReturn(id);
     }
 
-    /* 룰렛 모듈 */
+    /* 🎡 룰렛 모듈 */
     function roRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
         if (stage === 'ready') {
@@ -817,8 +845,8 @@
     }
 
     function roSpin(id) {
-        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
-        if (isNaN(betVal) || betVal <= 0) return alert('정확한 배팅 칩을 입력하십시오.');
+        const validatedBet = validateBettingChips(id);
+        if(!validatedBet) return;
 
         const type = document.getElementById(`ro-type-${id}`).value;
         let prediction = "";
@@ -832,7 +860,7 @@
         }
 
         const state = tableStates[id];
-        state.currentBet = betVal;
+        state.currentBet = validatedBet;
         roRenderControls(id, 'spinning');
         
         document.getElementById(`bet-${id}`).disabled = true;
@@ -844,7 +872,8 @@
         document.getElementById(`calc-${id}`).innerText = "";
 
         const winningIndex = Math.floor(Math.random() * rouletteNumbers.length);
-        const winningNumber = rouletteNumbers[winningIndex];
+        const winningNumber = rouletteNumbers[winningNumber]; // 변수 치환 보정
+        const calculatedNumber = rouletteNumbers[winningIndex];
 
         const degreesPerSlot = 360 / rouletteNumbers.length;
         state.currentRotation += 1800 + (winningIndex * degreesPerSlot);
@@ -853,7 +882,7 @@
         wheel.style.transform = `rotate(-${state.currentRotation}deg)`;
 
         setTimeout(() => {
-            roEvaluateResult(id, winningNumber, type, prediction);
+            roEvaluateResult(id, calculatedNumber, type, prediction);
         }, 3300);
     }
 
@@ -897,6 +926,9 @@
             calc.innerText = `📉 적중 실패. 직접 배팅 칩 회수 정산 완료 (-${state.currentBet * lossFactor} CHIPS)`;
             calc.className = 'calc-line lose-text';
         }
+        
+        // 한 판 종료 시 자동 이동 인터셉터 가동
+        triggerAutomaticReturn(id);
     }
 </script>
 
