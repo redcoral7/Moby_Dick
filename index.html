@@ -706,7 +706,7 @@
         }
     }
 
-    function bjStart(id) {
+    async function bjStart(id) {
         const validatedBet = validateBettingChips(id);
         if(!validatedBet) return;
 
@@ -836,7 +836,7 @@
         msg.className = 'msg-line';
     }
 
-    function oeRoll(id) {
+    async function oeRoll(id) {
         const state = tableStates[id];
         const validatedBet = validateBettingChips(id);
         if(!validatedBet) return;
@@ -940,7 +940,7 @@
         }, 3300);
     }
 
-    function roEvaluateResult(id, winNum, type, pred) {
+    async function roEvaluateResult(id, winNum, type, pred) {
         const state = tableStates[id];
         document.getElementById(`bet-${id}`).disabled = false;
         document.getElementById(`ro-type-${id}`).disabled = false;
