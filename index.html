@@ -290,8 +290,10 @@
     </div>
     <div id="auth-logged-in" class="hidden">
         <div class="user-logged-info">
-            <span>🟢 환영합니다, <span id="user-display-name" style="color:#fff; font-size:15px; text-decoration: underline;"></span>님</span>
-            <button class="action-btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="handleSignOut()">로그아웃</button>
+            <span>🟢 환영합니다, 
+            <span id="user-display-name"></span>님(<span id="user-display-id"></span>)</span>
+            <span>| 보유 포인트: <span id="user-display-point">0</span>P</span>
+            <button onclick="handleSignOut()">로그아웃</button>
         </div>
     </div>
 </div>
@@ -445,11 +447,22 @@
         document.getElementById('ctrl-1').innerHTML = "<span>검증 중...</span>";
 
         // Supabase 일반 데이터 테이블 조회 (login_id, password 평문 비교)
+        // login_id와 point 컬럼을 동시에 조회
         const { data, error } = await supabaseClient
-            .from(TARGET_TABLE_NAME)
-            .select('login_id')
+            .from('users')
+            .select('login_id, point') // <--- 'point' 필드를 추가로 가져오게 함
             .eq('login_id', inputId)
-            .eq('password', password); 
+            .eq('password', password);
+        
+        // 가져온 데이터를 UI에 꽂아주는 함수 추가
+        function processLoginSuccess(userData) {
+            document.getElementById('auth-logged-out').classList.add('hidden');
+            document.getElementById('auth-logged-in').classList.remove('hidden');
+            
+            // DB에서 받은 값을 화면에 반영
+            document.getElementById('user-display-name').innerText = userData.login_id;
+            document.getElementById('user-display-point').innerText = userData.point;
+        }
 
         if(error) {
             alert("조회 실패: " + error.message);
