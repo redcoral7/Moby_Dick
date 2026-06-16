@@ -275,7 +275,7 @@
     </a>
 </div>
 
-<!-- ───────────────── [변경] Supabase 통합 인증 패널 ───────────────── -->
+<!-- Supabase 통합 인증 패널 -->
 <div class="auth-container">
     <h3 style="color: #d4af37; font-size: 16px; margin-bottom: 12px;">🔐 카지노 이용자 로그인 센터</h3>
     <div id="auth-logged-out">
@@ -325,7 +325,6 @@
         </div>
     </div>
 
-    <!-- 로그인 전에는 disabled 상태 -->
     <button id="open-station-btn" class="global-btn" style="width: 100%; padding: 15px;" onclick="initializeArcadeGrid()" disabled>메인 관제 모니터 개장하기 (로그인 필요)</button>
 </div>
 
@@ -353,10 +352,10 @@
        SUPABASE CONFIGURATION & AUTH ENGINE
        ----------------------------------------------------------------- */
     const SUPABASE_URL = "https://zoasgzpjlmuégrvxlwgy.supabase.co"; 
-    const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq"; // 여기에 본인의 [Publishable key (anon)]를 대입해 주세요.
+    const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkA"; // 👈 이미지 image_06ef2d.png의 안전한 퍼블리셔블 키로 설정 완료!
     
     let supabaseClient = null;
-    let loggedInUserNickname = ""; // 테이블 명칭 자동 할당용 전역 변수
+    let loggedInUserNickname = ""; 
 
     if(SUPABASE_URL && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -375,14 +374,12 @@
     });
 
     function processLoginSuccess(email) {
-        // 이메일의 ID 영역(@ 앞부분)만 추출하여 가상 닉네임으로 활용
         loggedInUserNickname = email.split('@')[0];
         
         document.getElementById('auth-logged-out').classList.add('hidden');
         document.getElementById('auth-logged-in').classList.remove('hidden');
         document.getElementById('user-display-name').innerText = loggedInUserNickname;
 
-        // 로그인 성공 시에만 가이드 알림창 변경 및 모니터 개장 버튼 활성화
         const statusMsg = document.getElementById('setup-status-msg');
         statusMsg.innerText = "🟢 관제사 자격이 인증되었습니다. 메인 모니터를 개장할 수 있습니다.";
         statusMsg.style.color = "#34d399";
@@ -424,7 +421,6 @@
         
         if(!inputId || !password) return alert("아이디와 비밀번호를 모두 입력하십시오.");
 
-        // 아이디 단독 입력을 위해 내부 구동 시 가상 이메일 포맷으로 래핑 처리
         const pseudoEmail = inputId.includes('@') ? inputId : `${inputId}@virtualcasino.com`;
 
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email: pseudoEmail, password: password });
@@ -570,7 +566,6 @@
         const slot = document.getElementById(`slot-${id}`);
         const title = document.getElementById(`title-${id}`);
         
-        // 로그인 정보 기반 자동 타이틀 셋업 (지정 불가)
         tableStates[id] = { type: type, isGameOver: true, currentBet: 0, customName: loggedInUserNickname };
 
         if (type === 'blackjack') {
@@ -594,7 +589,6 @@
         }
     }
 
-    // 루프 핵심: 라운드 마감 시 선택창 롤백 핸들러
     function backToGameSelection(id) {
         const slot = document.getElementById(`slot-${id}`);
         slot.className = 'table-slot';
@@ -629,7 +623,6 @@
         }, 1000);
     }
 
-    // 포인트 유효성 내부 인터셉터 검증기
     function validateBettingChips(id) {
         const betInput = document.getElementById(`bet-${id}`);
         const betVal = parseInt(betInput.value);
@@ -756,7 +749,6 @@
             calc.className = 'calc-line';
         }
         
-        // 한 판 종료 시 자동 이동 인터셉터 가동
         triggerAutomaticReturn(id);
     }
 
@@ -811,7 +803,6 @@
         document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
         document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
         
-        // 한 판 종료 시 자동 이동 인터셉터 가동
         triggerAutomaticReturn(id);
     }
 
@@ -872,7 +863,6 @@
         document.getElementById(`calc-${id}`).innerText = "";
 
         const winningIndex = Math.floor(Math.random() * rouletteNumbers.length);
-        const winningNumber = rouletteNumbers[winningNumber]; // 변수 치환 보정
         const calculatedNumber = rouletteNumbers[winningIndex];
 
         const degreesPerSlot = 360 / rouletteNumbers.length;
@@ -927,7 +917,6 @@
             calc.className = 'calc-line lose-text';
         }
         
-        // 한 판 종료 시 자동 이동 인터셉터 가동
         triggerAutomaticReturn(id);
     }
 </script>
