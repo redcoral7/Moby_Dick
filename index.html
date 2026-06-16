@@ -364,7 +364,7 @@
     let currentUserPoint = 0;
 
     if(SUPABASE_URL && SUPABASE_ANON_KEY) {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
     // 일반 테이블 조회 방식으로 로그인 상태를 시뮬레이션합니다.
