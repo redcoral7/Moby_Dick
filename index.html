@@ -947,7 +947,7 @@ async function syncPoint(amount, isWin, payoutFactor, lossFactor = 5) {
     async function syncPoint(amount, isWin, payoutFactor, lossFactor = 5) {
     const change = isWin ? (amount * payoutFactor) : -(amount * lossFactor);
     const newPoint = currentUserPoint + change;
-    const { data } = await supabase.from('users').update({ point: newPoint }).eq('login_id', loggedInUserNickname).select().single();
+    const { data } = await supabaseClient.from('users').update({ point: newPoint }).eq('login_id', loggedInUserNickname).select().single();
     if (data) {
         currentUserPoint = data.point;
         document.getElementById('user-display-point').innerText = currentUserPoint;
