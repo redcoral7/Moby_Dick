@@ -350,7 +350,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// 1. Supabase 초기화
+    // 1. 초기화
     const SUPABASE_URL = "https://zoasgzpjlmuegrvxlwgy.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -358,45 +358,7 @@
     let loggedInUserNickname = "";
     let currentUserPoint = 0;
 
-    // 2. 자동 로그인 체크
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedUser = localStorage.getItem('arcade_fake_session_user');
-        if (savedUser) {
-            // 새로고침 시 정보 복구 (DB 호출 대신 로컬 스토리지 사용)
-            processLoginSuccess({ login_id: savedUser, point: 0 }); 
-        } else {
-            processLogoutState();
-        }
-    });
-
-    // 3. UI 처리 함수
-    function processLoginSuccess(userData) {
-        loggedInUserNickname = userData.login_id;
-        currentUserPoint = userData.point;
-        
-        document.getElementById('auth-logged-out').classList.add('hidden');
-        document.getElementById('auth-logged-in').classList.remove('hidden');
-        document.getElementById('user-display-name').innerText = userData.login_id;
-        document.getElementById('user-display-point').innerText = userData.point;
-    }
-
-    function processLogoutState() {
-        loggedInUserNickname = "";
-        currentUserPoint = 0;
-        localStorage.removeItem('arcade_fake_session_user');
-        
-        document.getElementById('auth-logged-out').classList.remove('hidden');
-        document.getElementById('auth-logged-in').classList.add('hidden');
-        
-        // 메뉴 복구 (함수가 정의되어 있다면 호출)
-        if (typeof returnToMainMenu === 'function') returnToMainMenu();
-    }
-
-    // 4. 기능 함수들
-    function handleSignUpInfo() {
-        alert("회원가입은 가상 카지노 관리자에게 직접 문의하세요.");
-    }
-
+    // 2. 핵심 함수들
     async function handleSignIn() {
         const inputId = document.getElementById('auth-username').value.trim();
         const password = document.getElementById('auth-password').value;
@@ -410,29 +372,15 @@
             .eq('login_id', inputId)
             .eq('password', password);
         
-        if(error) { 
-            alert("조회 실패: " + error.message); 
-            processLogoutState(); 
-        } else if (data && data.length > 0) {
+        if(data && data.length > 0) {
             localStorage.setItem('arcade_fake_session_user', data[0].login_id);
-            processLoginSuccess(data[0]);
-            alert(`환영합니다, ${data[0].login_id}님!`);
+            location.reload(); 
         } else {
-            alert("로그인 실패: 아이디/비번 확인");
-            document.getElementById('ctrl-1').innerHTML = `
-                <button class="action-btn-primary" onclick="handleSignIn()">로그인</button>
-                <button class="action-btn-secondary" onclick="handleSignUpInfo()">가상 회원가입</button>
-            `;
-            processLogoutState();
+            alert("로그인 실패");
+            location.reload();
         }
     }
 
-    async function handleSignOut() {
-        alert("관제실 세션을 종료합니다.");
-        processLogoutState();
-    }
-
-    // 5. 정산 함수 (모든 게임 엔진에서 호출 가능)
     async function syncPoint(amount, isWin, payoutFactor, lossFactor = 5) {
         const change = isWin ? (amount * payoutFactor) : -(amount * lossFactor);
         const { data, error } = await supabaseClient
@@ -450,6 +398,32 @@
         }
     }
 
+    // 3. UI 및 상태 관리
+    function processLoginSuccess(userData) {
+        loggedInUserNickname = userData.login_id;
+        currentUserPoint = userData.point;
+        
+        document.getElementById('auth-logged-out').classList.add('hidden');
+        document.getElementById('auth-logged-in').classList.remove('hidden');
+        document.getElementById('user-display-name').innerText = userData.login_id;
+        document.getElementById('user-display-point').innerText = userData.point;
+    }
+
+    function processLogoutState() {
+        loggedInUserNickname = "";
+        currentUserPoint = 0;
+        localStorage.removeItem('arcade_fake_session_user');
+        document.getElementById('auth-logged-out').classList.remove('hidden');
+        document.getElementById('auth-logged-in').classList.add('hidden');
+    }
+
+    function handleSignUpInfo() { alert("관리자에게 문의하세요."); }
+
+    function handleSignOut() {
+        alert("관제실 세션을 종료합니다.");
+        processLogoutState();
+        location.reload();
+    }
 
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
