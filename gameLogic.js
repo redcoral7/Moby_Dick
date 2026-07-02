@@ -257,46 +257,42 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
         bjEnd(id);
     }
 
-    export function bjEnd(id) {
+    export async function bjEnd(id) {
         const state = tableStates[id];
         state.isGameOver = true;
         document.getElementById(`bet-${id}`).disabled = false;
         bjRenderControls(id, 'ready');
         bjUpdateDisplay(id, false);
-
+    
         const p = bjScore(state.playerHand);
         const d = bjScore(state.dealerHand);
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
         let status = '';
-
+    
         if (p > 21) { status = 'lose'; msg.innerText = 'Dealer Wins! 플레이어 버스트!'; }
         else if (d > 21) { status = 'win'; msg.innerText = 'Player Wins! 딜러 버스트!'; }
         else if (p > d) { status = 'win'; msg.innerText = 'Player Wins! 하이 스코어 달성!'; }
         else if (p < d) { status = 'lose'; msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; }
         else { status = 'draw'; msg.innerText = '🤝 무승부 (Push) 칩 반환.'; }
-
+    
         if (status === 'win') {
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 10} CHIPS)`;
             calc.className = 'calc-line win-text';
+            const userId = localStorage.getItem('currentUser');
+            await updatePoints(userId, state.currentBet * 10);
         } else if (status === 'lose') {
             msg.className = 'msg-line lose-text';
             calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`;
             calc.className = 'calc-line lose-text';
+            const userId = localStorage.getItem('currentUser');
+            await updatePoints(userId, -(state.currentBet * 5));
         } else {
             calc.innerText = '결과 정산: 0 CHIPS';
             calc.className = 'calc-line';
         }
-        const userId = localStorage.getItem('currentUser'); 
-    
-        if (status === 'win') {
-            await updatePoints(userId, state.currentBet * 10); // 승리 시 포인트 적립
-        } else if (status === 'lose') {
-            await updatePoints(userId, -(state.currentBet * 5)); // 패배 시 포인트 차감
-        }
     }
-
     /* 홀짝엔진 */
     export function oeRenderControls(id, stage) {
         document.getElementById(`ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
@@ -319,39 +315,34 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
         msg.className = 'msg-line';
     }
 
-    export function oeRoll(id) {
+    export async function oeRoll(id) {
         const state = tableStates[id];
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
         if (!state.userChoice) return alert('홀/짝 구역에 베팅을 먼저 결정하십시오.');
-
+    
         state.currentBet = betVal;
         const d1 = Math.floor(Math.random() * 6) + 1;
         const d2 = Math.floor(Math.random() * 6) + 1;
         const sum = d1 + d2;
         const isOddResult = (sum % 2 !== 0);
         document.getElementById(`oe-dice-${id}`).innerText = `${diceEmojis[d1]} + ${diceEmojis[d2]} = ${sum} [${isOddResult ? '홀':'짝'}]`;
-
+    
         const isWin = (state.userChoice === 'odd' && isOddResult) || (state.userChoice === 'even' && !isOddResult);
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
-
+    
+        const userId = localStorage.getItem('currentUser');
         if (isWin) {
             msg.innerText = '🎉 축하합니다! 베팅 포지션 적중.'; msg.className = 'msg-line win-text';
             calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line win-text';
+            await updatePoints(userId, state.currentBet * 5);
         } else {
             msg.innerText = '❌ 하우스 승리! 베팅 포지션 이탈.'; msg.className = 'msg-line lose-text';
             calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
+            await updatePoints(userId, -(state.currentBet * 5));
         }
-        
-        const userId = localStorage.getItem('currentUser');
-        if (isWin) {
-            await updatePoints(userId, state.currentBet * 5); // 승리 시 포인트 적립
-        } else {
-            await updatePoints(userId, -(state.currentBet * 5)); // 패배 시 포인트 차감
-        }
-    }
-
+    
         state.userChoice = null;
         document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
         document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
@@ -427,52 +418,48 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
         }, 3300);
     }
 
-    export function roEvaluateResult(id, winNum, type, pred) {
+    export async function roEvaluateResult(id, winNum, type, pred) {
         const state = tableStates[id];
         document.getElementById(`bet-${id}`).disabled = false;
         document.getElementById(`ro-type-${id}`).disabled = false;
         document.getElementById(`ro-target-select-${id}`).disabled = false;
         document.getElementById(`ro-target-number-${id}`).disabled = false;
         roRenderControls(id, 'ready');
-
+    
         const isRed = redNumbers.includes(winNum);
         let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
         let winColorEmoji = winNum === 0 ? "🟢" : (isRed ? "🔴" : "⚫");
         let isOdd = winNum % 2 !== 0;
         let winOeStr = winNum === 0 ? "None" : (isOdd ? "Odd" : "Even");
-
+    
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
         msg.innerText = `🎯 볼 안착 결과: [ ${winColorEmoji} No.${winNum} (${winOeStr}) ]`;
-
+    
         let isWin = false;
-        let lossFactor = 5; 
-
+        let lossFactor = 5;
+    
         if (type === 'color') {
             isWin = (pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black');
         } else if (type === 'oe') {
             isWin = (winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd));
         } else if (type === 'number') {
             isWin = (parseInt(pred) === winNum);
-            lossFactor = 10; 
+            lossFactor = 10;
         }
-
+    
+        const userId = localStorage.getItem('currentUser');
         if (isWin) {
             let payoutFactor = (type === 'number') ? 10 : 2;
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * payoutFactor} CHIPS)`;
             calc.className = 'calc-line win-text';
+            await updatePoints(userId, state.currentBet * payoutFactor);
         } else {
             msg.className = 'msg-line lose-text';
             calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * lossFactor} CHIPS)`;
             calc.className = 'calc-line lose-text';
-        }
-        
-        const userId = localStorage.getItem('currentUser');
-        if (isWin) {
-            let payoutFactor = (type === 'number') ? 10 : 2;
-            await updatePoints(userId, state.currentBet * payoutFactor);
-        } else {
             await updatePoints(userId, -(state.currentBet * lossFactor));
         }
     }
+
