@@ -1,4 +1,10 @@
 // gameLogic.js 내부...
+let supabaseClient = null;
+
+export function setSupabase(client) {
+    supabaseClient = client;
+}
+
 import { updatePoints } from './authLogic.js';
 
 async function handleGameWin(userId, betAmount, winMultiplier) {
