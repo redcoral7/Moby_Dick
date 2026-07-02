@@ -21,13 +21,26 @@
 
     <script type="module">
         import * as Game from './gameLogic.js';
+        import * as Auth from './authLogic.js';
     // 1. Supabase 초기화 (이미지에 있는 값을 그대로 복사해서 넣으세요)
-        const supabaseUrl = 'https://zoasgzpjlmuegrvxlwgy.supabase.co/rest/v1/';
+        const supabaseUrl = 'https://zoasgzpjlmuegrvxlwgy.supabase.co';
         const supabaseKey = 'sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
         // 2. 게임 로직에 supabaseClient 전달
         Game.setSupabase(supabaseClient);
-        
+        Auth.setSupabase(supabaseClient);
+
+        document.getElementById('loginBtn').onclick = async () => {
+        const id = document.getElementById('uid').value;
+        const pw = document.getElementById('upw').value;
+        try {
+            const user = await loginUser(id, pw);
+            if(user) document.getElementById('loginPanel').style.display = 'none';
+        } catch(e) {
+            alert('로그인 실패: ' + e.message);
+        }
+    };
+
         window.setupGame = Game.setupGame;
         window.resetSlot = Game.resetSlot;
         window.bjStart = Game.bjStart;
@@ -37,14 +50,6 @@
         window.oeRoll = Game.oeRoll;
         window.roTypeChange = Game.roTypeChange;
         window.roSpin = Game.roSpin;
-        
-        import { login } from './authLogic.js';
-        import { calculateWin, syncPoint } from './gameLogic.js';
-
-        document.getElementById('loginBtn').onclick = async () => {
-            const success = await login(supabase, 'id', 'pw');
-            if(success) document.getElementById('loginPanel').style.display = 'none';
-        };
 
     </script>
 </body>
