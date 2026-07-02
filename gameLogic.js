@@ -288,6 +288,13 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
             calc.innerText = '결과 정산: 0 CHIPS';
             calc.className = 'calc-line';
         }
+        const userId = localStorage.getItem('currentUser'); 
+    
+        if (status === 'win') {
+            await updatePoints(userId, state.currentBet * 10); // 승리 시 포인트 적립
+        } else if (status === 'lose') {
+            await updatePoints(userId, -(state.currentBet * 5)); // 패배 시 포인트 차감
+        }
     }
 
     /* 홀짝엔진 */
