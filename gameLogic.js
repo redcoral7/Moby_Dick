@@ -343,6 +343,14 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
             msg.innerText = '❌ 하우스 승리! 베팅 포지션 이탈.'; msg.className = 'msg-line lose-text';
             calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
         }
+        
+        const userId = localStorage.getItem('currentUser');
+        if (isWin) {
+            await updatePoints(userId, state.currentBet * 5); // 승리 시 포인트 적립
+        } else {
+            await updatePoints(userId, -(state.currentBet * 5)); // 패배 시 포인트 차감
+        }
+    }
 
         state.userChoice = null;
         document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
@@ -458,5 +466,13 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
             msg.className = 'msg-line lose-text';
             calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * lossFactor} CHIPS)`;
             calc.className = 'calc-line lose-text';
+        }
+        
+        const userId = localStorage.getItem('currentUser');
+        if (isWin) {
+            let payoutFactor = (type === 'number') ? 10 : 2;
+            await updatePoints(userId, state.currentBet * payoutFactor);
+        } else {
+            await updatePoints(userId, -(state.currentBet * lossFactor));
         }
     }
