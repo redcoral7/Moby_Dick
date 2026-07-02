@@ -9,7 +9,7 @@
     const rouletteNumbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 
-    function initializeArcadeGrid() {
+    export function initializeArcadeGrid() {
         const select = document.getElementById('table-count-select');
         totalTables = parseInt(select.value);
 
@@ -27,7 +27,7 @@
         }
     }
 
-    function createSlotHTML(id) {
+    export function createSlotHTML(id) {
         return `
             <div id="slot-${id}" class="table-slot">
                 <div class="table-header">
@@ -117,7 +117,7 @@
         `;
     }
 
-    function setupGame(id, type) {
+    export function setupGame(id, type) {
         const nameInput = document.getElementById(`slot-name-${id}`);
         let customName = nameInput.value.trim() || `테이블 0${id}`;
 
@@ -150,7 +150,7 @@
         }
     }
 
-    function resetSlot(id) {
+    export function resetSlot(id) {
         const slot = document.getElementById(`slot-${id}`);
         slot.className = 'table-slot';
         document.getElementById(`title-${id}`).innerText = '공석 (대기 중)';
@@ -165,7 +165,7 @@
     }
 
     /* 블랙잭 엔진 */
-    function bjRenderControls(id, stage) {
+    export function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
         if (stage === 'ready') {
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>`;
@@ -177,7 +177,7 @@
         }
     }
 
-    function bjStart(id) {
+    export function bjStart(id) {
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 
@@ -208,7 +208,7 @@
         if (bjScore(state.playerHand) === 21) { bjEnd(id); }
     }
 
-    function bjScore(hand) {
+    export function bjScore(hand) {
         let score = 0; let aceCount = 0;
         for (let card of hand) {
             if (['J', 'Q', 'K'].includes(card.value)) score += 10;
@@ -219,7 +219,7 @@
         return score;
     }
 
-    function bjUpdateDisplay(id, hideDealer) {
+    export function bjUpdateDisplay(id, hideDealer) {
         const state = tableStates[id];
         document.getElementById(`bj-pcards-${id}`).innerText = state.playerHand.map(c => c.suit+c.value).join(' ');
         document.getElementById(`bj-pscore-${id}`).innerText = `점수: ${bjScore(state.playerHand)}`;
@@ -233,7 +233,7 @@
         }
     }
 
-    function bjHit(id) {
+    export function bjHit(id) {
         const state = tableStates[id];
         if (state.isGameOver) return;
         state.playerHand.push(state.deck.pop());
@@ -241,14 +241,14 @@
         if (bjScore(state.playerHand) > 21) bjEnd(id);
     }
 
-    function bjStand(id) {
+    export function bjStand(id) {
         const state = tableStates[id];
         if (state.isGameOver) return;
         while (bjScore(state.dealerHand) < 17) { state.dealerHand.push(state.deck.pop()); }
         bjEnd(id);
     }
 
-    function bjEnd(id) {
+    export function bjEnd(id) {
         const state = tableStates[id];
         state.isGameOver = true;
         document.getElementById(`bet-${id}`).disabled = false;
@@ -282,11 +282,11 @@
     }
 
     /* 홀짝엔진 */
-    function oeRenderControls(id, stage) {
+    export function oeRenderControls(id, stage) {
         document.getElementById(`ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
     }
 
-    function oeSelect(id, choice) {
+    export function oeSelect(id, choice) {
         const state = tableStates[id];
         state.userChoice = choice;
         const oddBtn = document.getElementById(`oe-oddbtn-${id}`);
@@ -303,7 +303,7 @@
         msg.className = 'msg-line';
     }
 
-    function oeRoll(id) {
+    export function oeRoll(id) {
         const state = tableStates[id];
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
@@ -334,7 +334,7 @@
     }
 
     /* 룰렛엔진 */
-    function roRenderControls(id, stage) {
+    export function roRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
         if (stage === 'ready') {
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="roSpin(${id})">룰렛 휠 회전 트리거 (Spin)</button>`;
@@ -343,7 +343,7 @@
         }
     }
 
-    function roTypeChange(id) {
+    export function roTypeChange(id) {
         const type = document.getElementById(`ro-type-${id}`).value;
         const select = document.getElementById(`ro-target-select-${id}`);
         const numInput = document.getElementById(`ro-target-number-${id}`);
@@ -362,7 +362,7 @@
         }
     }
 
-    function roSpin(id) {
+    export function roSpin(id) {
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 
@@ -403,7 +403,7 @@
         }, 3300);
     }
 
-    function roEvaluateResult(id, winNum, type, pred) {
+    export function roEvaluateResult(id, winNum, type, pred) {
         const state = tableStates[id];
         document.getElementById(`bet-${id}`).disabled = false;
         document.getElementById(`ro-type-${id}`).disabled = false;
