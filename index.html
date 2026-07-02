@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
     <div class="login-overlay" id="loginPanel">
         <div class="login-box">
             <h2>LOGIN</h2>
@@ -35,18 +34,46 @@
             const pw = document.getElementById('upw').value;
             
             try {
-                // Auth 모듈의 loginUser 함수를 호출하도록 수정
                 const user = await Auth.loginUser(id, pw);
                 if(user) {
+                    // 1. 로그인 패널 숨기기
                     document.getElementById('loginPanel').style.display = 'none';
-                    alert('로그인 성공!');
+                    // 2. 설정 화면(setup-view)도 강제로 숨기기
+                    const setupView = document.getElementById('setup-view');
+                    if(setupView) {
+                        setupView.classList.add('hidden');
+                    }
+                    // 3. 바로 1개 테이블 게임 모드로 진입
+                    alert('로그인 성공! 게임 시스템을 시작합니다.');
+                    Game.initializeArcadeGrid(1); 
                 }
             } catch(e) {
                 console.error(e);
                 alert('로그인 실패: ' + e.message);
             }
+        };
+        
+window.initializeArcadeGrid = () => Game.initializeArcadeGrid(1);
+    
+    // 로그아웃 로직 추가
+    window.handleSignOut = () => {
+        localStorage.removeItem('arcade_fake_session_user');
+        location.reload();
     };
 
+    // 5. 페이지 로드 시 상태 확인
+    window.onload = async () => {
+        const savedUser = localStorage.getItem('currentUser'); // authLogic.js에서 저장한 key값 사용
+        const btn = document.getElementById('open-station-btn');
+        const msg = document.getElementById('setup-status-msg');
+        
+        if (savedUser && btn && msg) {
+            btn.disabled = false;
+            msg.innerText = "✅ 로그인이 확인되었습니다. 관제 시스템을 개장하십시오.";
+            msg.style.color = "#34d399";
+        }
+    };
+    // 기타 게임 로직 노출
         window.setupGame = Game.setupGame;
         window.resetSlot = Game.resetSlot;
         window.bjStart = Game.bjStart;
@@ -56,7 +83,6 @@
         window.oeRoll = Game.oeRoll;
         window.roTypeChange = Game.roTypeChange;
         window.roSpin = Game.roSpin;
-
     </script>
 </body>
 </html>
