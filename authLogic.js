@@ -28,22 +28,33 @@ export async function loginUser(id, pw) {
 // 포인트 조회 함수
 export async function getUserPoints(userId) {
     const { data, error } = await supabaseClient
-        .from('users') // 만드신 테이블 이름
+        .from('users')
         .select('point')
-        .eq('user_id', userId) // 인증된 user의 ID와 매칭
+        .eq('id', userId) // 'user_id'가 아니라 'id'여야 합니다.
         .single();
         
-    if (error) return 0;
+    if (error) {
+        console.error("포인트 조회 오류:", error);
+        return 0;
+    }
     return data.point;
 }
 
-// 포인트 업데이트 함수 (게임 종료 시 사용)
+// 포인트 업데이트 함수
 export async function updatePoints(userId, amountChange) {
+    // 1. 현재 포인트 조회
     const currentPoints = await getUserPoints(userId);
+    // 2. 새로운 포인트 계산
+    const newPoints = currentPoints + amountChange;
+    // 3. 업데이트 수행 ('user_id' -> 'id'로 수정)
     const { data, error } = await supabaseClient
         .from('users')
-        .update({ point: currentPoints + amountChange })
-        .eq('user_id', userId);
+        .update({ point: newPoints })
+        .eq('id', userId); 
         
-    return !error;
+    if (error) {
+        console.error("포인트 업데이트 오류:", error);
+        return false;
+    }
+    return true;
 }
