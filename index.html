@@ -20,16 +20,25 @@
     <header><h1>VIP 로얄 카지노 관제 시스템</h1></header>
 
     <script type="module">
+        
+        window.setupGame = Game.setupGame;
+        window.resetSlot = Game.resetSlot;
+        window.bjStart = Game.bjStart;
+        window.bjHit = Game.bjHit;
+        window.bjStand = Game.bjStand;
+        window.oeSelect = Game.oeSelect;
+        window.oeRoll = Game.oeRoll;
+        window.roTypeChange = Game.roTypeChange;
+        window.roSpin = Game.roSpin;
+        
         import { login } from './authLogic.js';
         import { calculateWin, syncPoint } from './gameLogic.js';
 
-        // 1. 초기 로그인 이벤트 연결
         document.getElementById('loginBtn').onclick = async () => {
             const success = await login(supabase, 'id', 'pw');
             if(success) document.getElementById('loginPanel').style.display = 'none';
         };
 
-        // 2. 게임 실행 및 기타 로직 통합
     </script>
 </body>
 </html>
