@@ -1,4 +1,13 @@
+// gameLogic.js 내부...
+import { updatePoints } from './authLogic.js';
 
+async function handleGameWin(userId, betAmount, winMultiplier) {
+    const earnings = betAmount * winMultiplier;
+    const success = await updatePoints(userId, earnings);
+    if(success) {
+        alert(`축하합니다! ${earnings} 포인트가 적립되었습니다.`);
+    }
+}
     let totalTables = 0;
     const tableStates = {}; 
 
