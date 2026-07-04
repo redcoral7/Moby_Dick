@@ -16,7 +16,12 @@
         </div>
     </div>
 
-    <header><h1>VIP 로얄 카지노 관제 시스템</h1></header>
+    <header id="arcade-header" class="hidden">
+        <h1>VIP 로얄 카지노 관제 시스템</h1>
+    </header>
+    
+    <div id="arcade-viewport" class="arcade-grid hidden">
+        </div>
 
     <script type="module">
         import * as Auth from './authLogic.js';
@@ -36,23 +41,24 @@
             try {
                 const user = await Auth.loginUser(id, pw);
                 if(user) {
-                    // 1. 로그인 패널 숨기기
+                    // 1. 로그인 창 숨기기
                     document.getElementById('loginPanel').style.display = 'none';
-                    // 2. 설정 화면(setup-view)도 강제로 숨기기
-                    const setupView = document.getElementById('setup-view');
-                    if(setupView) {
-                        setupView.classList.add('hidden');
-                    }
-                    // 3. 바로 1개 테이블 게임 모드로 진입
-                    alert('로그인 성공! 게임 시스템을 시작합니다.');
+                    
+                    // 2. 게임 영역 표시하기
+                    document.getElementById('arcade-header').classList.remove('hidden');
+                    const viewport = document.getElementById('arcade-viewport');
+                    viewport.classList.remove('hidden');
+                    
+                    // 3. 게임 테이블 즉시 생성
                     Game.initializeArcadeGrid(1); 
+                    
+                    alert('로그인 성공! 시스템을 개장합니다.');
                 }
             } catch(e) {
-                console.error(e);
                 alert('로그인 실패: ' + e.message);
             }
         };
-        
+                
 window.initializeArcadeGrid = () => Game.initializeArcadeGrid(1);
     
     // 로그아웃 로직 추가
