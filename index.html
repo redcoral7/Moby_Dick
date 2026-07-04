@@ -681,6 +681,7 @@
     /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
+        if (!ctrl) return;
         if (stage === 'ready') {
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">포인트 배팅 및 직접 블랙잭 플레이 개시</button>`;
         } else if (stage === 'play') {
