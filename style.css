@@ -21,3 +21,16 @@ header { text-align: center; border-bottom: 3px double #b89030; padding-bottom: 
 }
 .login-box input { display: block; margin: 10px auto; padding: 10px; width: 200px; }
 .login-box button { background: #d4af37; border: none; padding: 10px 20px; cursor: pointer; }
+
+.hidden {
+    display: none !important;
+}
+
+/* 게임 그리드 레이아웃 */
+.arcade-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
