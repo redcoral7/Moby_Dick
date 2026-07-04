@@ -35,21 +35,30 @@
         Auth.setSupabase(supabaseClient);
 
         document.getElementById('loginBtn').onclick = async () => {
-            const id = document.getElementById('uid').value;
-            const pw = document.getElementById('upw').value;
-            
-            try {
-                const user = await Auth.loginUser(id, pw);
-                if(user) {
-                    document.getElementById('loginPanel').style.display = 'none';
-                    // 즉시 게임 테이블 1개 생성 및 표시
-                    Game.initializeArcadeGrid(1); 
-                    alert('로그인 성공! 시스템이 개장되었습니다.');
-                }
-            } catch(e) {
-                alert('로그인 실패: ' + e.message);
+        const id = document.getElementById('uid').value;
+        const pw = document.getElementById('upw').value;
+        
+        try {
+            const user = await Auth.loginUser(id, pw);
+            if(user) {
+                // 1. 로그인 창 제거
+                document.getElementById('loginPanel').style.display = 'none';
+                
+                // 2. 헤더 및 뷰포트 표시
+                document.getElementById('arcade-header').classList.remove('hidden');
+                const viewport = document.getElementById('arcade-viewport');
+                viewport.classList.remove('hidden');
+                
+                // 3. 게임 그리드 초기화
+                Game.initializeArcadeGrid(1); 
+                
+                alert('로그인 성공! 시스템이 개장되었습니다.');
             }
-        };
+        } catch(e) {
+            console.error(e);
+            alert('로그인 실패: ' + e.message);
+        }
+    };
                 
 window.initializeArcadeGrid = () => Game.initializeArcadeGrid(1);
     
