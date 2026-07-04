@@ -6,25 +6,32 @@ export function setSupabase(client) {
 }
 
 export function initializeArcadeGrid(count) {
-    const viewport = document.getElementById('arcade-viewport');
-    if (!viewport) {
-        console.error("화면에 'arcade-viewport' 태그를 찾을 수 없습니다.");
-        return;
-    }
-    
-    // 설정창 숨기기
+    // 1. select 요소가 없는 상황을 대비하여 안전하게 값을 가져옵니다.
+    const select = document.getElementById('table-count-select');
+    // 인자로 count 값이 들어오면 우선 사용하고, 없으면 select 태그의 값을 사용하며, 
+    // 둘 다 없으면 기본값 1을 사용합니다.
+    totalTables = count || (select ? parseInt(select.value) : 1);
+
+    // 2. setup-view 요소가 있는지 확인 후 숨깁니다.
     const setupView = document.getElementById('setup-view');
     if (setupView) setupView.classList.add('hidden');
     
-    // 헤더 및 뷰포트 표시
+    // 3. 헤더 표시
     const header = document.getElementById('arcade-header');
     if (header) header.classList.remove('hidden');
     
+    // 4. 뷰포트 설정
+    const viewport = document.getElementById('arcade-viewport');
+    if (!viewport) {
+        console.error("화면에 'arcade-viewport' 태그가 없습니다!");
+        return;
+    }
+
     viewport.innerHTML = ''; 
     viewport.classList.remove('hidden');
-    viewport.className = `arcade-grid grid-${count || 1}`;
+    viewport.className = `arcade-grid grid-${totalTables}`;
 
-    for (let i = 1; i <= (count || 1); i++) {
+    for (let i = 1; i <= totalTables; i++) {
         tableStates[i] = { type: 'none' }; 
         viewport.innerHTML += createSlotHTML(i);
     }
