@@ -285,7 +285,7 @@
         </div>
         <div class="auth-btn-zone" id="ctrl-1">
             <button class="action-btn-primary" onclick="handleSignIn()">로그인</button>
-            <button class="action-btn-secondary" onclick="handleSignUpInfo()">가상 회원가입</button>
+            <button class="action-btn-secondary" onclick="handleSignUpInfo()">회원가입</button>
         </div>
     </div>
     <div id="auth-logged-in" class="hidden">
@@ -392,7 +392,7 @@
         // 버튼 상태 복구
         document.getElementById('ctrl-1').innerHTML = `
             <button class="action-btn-primary" onclick="handleSignIn()">로그인</button>
-            <button class="action-btn-secondary" onclick="handleSignUpInfo()">가상 회원가입</button>
+            <button class="action-btn-secondary" onclick="handleSignUpInfo()">회원가입</button>
         `;
     }
 
@@ -420,14 +420,14 @@
         if(ctrl1) {
             ctrl1.innerHTML = `
                 <button class="action-btn-primary" onclick="handleSignIn()">로그인</button>
-                <button class="action-btn-secondary" onclick="handleSignUpInfo()">가상 회원가입</button>
+                <button class="action-btn-secondary" onclick="handleSignUpInfo()">회원가입</button>
             `;
         }
         returnToMainMenu();
     }
 
     function handleSignUpInfo() {
-        alert("회원가입은 가상 카지노 관리자에게 직접 문의하세요.");
+        alert("회원가입은 카지노 관리자에게 직접 문의하세요.");
     }
 
     // ───────────────── 일반 테이블 조회 로그인 엔진 ─────────────────
