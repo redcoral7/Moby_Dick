@@ -26,11 +26,9 @@ header { text-align: center; border-bottom: 3px double #b89030; padding-bottom: 
     display: none !important;
 }
 
-/* 게임 그리드 레이아웃 */
 .arcade-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    max-width: 800px;
-    margin: 20px auto;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
     padding: 20px;
 }
