@@ -4,26 +4,24 @@ let supabaseClient = null;
 export function setSupabase(client) {
     supabaseClient = client;
 }
-
+// authLogic.js
 export async function loginUser(id, pw) {
-    // Supabase의 내장 Auth 대신 직접 만든 테이블을 조회
+    // .signInWithPassword 대신 .from().select()를 사용해야 합니다.
     const { data, error } = await supabaseClient
-        .from('users')
+        .from('users') // 직접 만든 테이블 이름
         .select('*')
-        .eq('login_id', id) // 테이블 컬럼명이 login_id라고 가정
-        .eq('password', pw) // 테이블 컬럼명이 password라고 가정
+        .eq('login_id', id)  // DB의 ID 컬럼명에 맞춰 수정하세요
+        .eq('password', pw)  // DB의 비밀번호 컬럼명에 맞춰 수정하세요
         .single();
 
     if (error || !data) {
         throw new Error('ID 또는 비밀번호가 일치하지 않습니다.');
     }
     
-    // 성공 시 로컬 스토리지에 유저 정보 저장 (화면 유지용)
-    localStorage.setItem('currentUser', JSON.stringify(data));
+    // 성공 시 로컬 스토리지에 유저 ID 저장 (세션 유지)
+    localStorage.setItem('currentUser', data.id);
     return data;
 }
-
-
 
 // 포인트 조회 함수
 export async function getUserPoints(userId) {
