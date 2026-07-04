@@ -5,26 +5,26 @@ export function setSupabase(client) {
     supabaseClient = client;
 }
 
-// 로그인 함수
 export async function loginUser(id, pw) {
-    // 1. signInWithPassword 대신 .from().select()를 사용합니다.
+    // Supabase의 내장 Auth 대신 직접 만든 테이블을 조회
     const { data, error } = await supabaseClient
-        .from('users') // 직접 만든 테이블 이름
+        .from('users')
         .select('*')
-        .eq('login_id', id)  // DB의 컬럼명에 맞춰 수정
-        .eq('password', pw)  // DB의 컬럼명에 맞춰 수정
-        .single();           // 단일 레코드 반환
+        .eq('login_id', id) // 테이블 컬럼명이 login_id라고 가정
+        .eq('password', pw) // 테이블 컬럼명이 password라고 가정
+        .single();
 
-    if (error) {
+    if (error || !data) {
         throw new Error('ID 또는 비밀번호가 일치하지 않습니다.');
     }
     
-    if (data) {
-        // 성공 시 로컬 스토리지에 유저 ID 저장
-        localStorage.setItem('currentUser', data.id);
-        return data;
-    }
+    // 성공 시 로컬 스토리지에 유저 정보 저장 (화면 유지용)
+    localStorage.setItem('currentUser', JSON.stringify(data));
+    return data;
 }
+
+
+
 // 포인트 조회 함수
 export async function getUserPoints(userId) {
     const { data, error } = await supabaseClient
