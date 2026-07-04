@@ -5,6 +5,32 @@ export function setSupabase(client) {
     supabaseClient = client;
 }
 
+export function initializeArcadeGrid(count) {
+    const viewport = document.getElementById('arcade-viewport');
+    if (!viewport) {
+        console.error("화면에 'arcade-viewport' 태그를 찾을 수 없습니다.");
+        return;
+    }
+    
+    // 설정창 숨기기
+    const setupView = document.getElementById('setup-view');
+    if (setupView) setupView.classList.add('hidden');
+    
+    // 헤더 및 뷰포트 표시
+    const header = document.getElementById('arcade-header');
+    if (header) header.classList.remove('hidden');
+    
+    viewport.innerHTML = ''; 
+    viewport.classList.remove('hidden');
+    viewport.className = `arcade-grid grid-${count || 1}`;
+
+    for (let i = 1; i <= (count || 1); i++) {
+        tableStates[i] = { type: 'none' }; 
+        viewport.innerHTML += createSlotHTML(i);
+    }
+}
+
+
 import { updatePoints } from './authLogic.js';
 
 async function handleGameWin(userId, betAmount, winMultiplier) {
