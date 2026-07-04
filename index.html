@@ -45,12 +45,7 @@
                     document.getElementById('loginPanel').style.display = 'none';
                     
                     // 2. 게임 영역 표시하기
-                    document.getElementById('arcade-header').classList.remove('hidden');
-                    const viewport = document.getElementById('arcade-viewport');
-                    viewport.classList.remove('hidden');
-                    
-                    // 3. 게임 테이블 즉시 생성
-                    Game.initializeArcadeGrid(1); 
+                    Game.initGameUI();
                     
                     alert('로그인 성공! 시스템을 개장합니다.');
                 }
