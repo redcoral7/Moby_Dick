@@ -50,23 +50,31 @@ async function handleGameWin(userId, betAmount, winMultiplier) {
     const rouletteNumbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 
-    export function initializeArcadeGrid() {
-        const select = document.getElementById('table-count-select');
-        totalTables = parseInt(select.value);
+    export function initializeArcadeGrid(count) {
+    // 1. select 요소가 없으므로 인자로 받은 count를 직접 사용합니다.
+    totalTables = count || 1; 
 
-        document.getElementById('setup-view').classList.add('hidden');
-        document.getElementById('arcade-header').classList.remove('hidden');
-        
-        const viewport = document.getElementById('arcade-viewport');
-        viewport.innerHTML = ''; 
-        viewport.classList.remove('hidden');
-        viewport.className = `arcade-grid grid-${totalTables}`;
+    // 2. setup-view 요소가 있는지 확인 후 hidden 처리
+    const setupView = document.getElementById('setup-view');
+    if (setupView) setupView.classList.add('hidden');
+    
+    // 3. 헤더 표시
+    const header = document.getElementById('arcade-header');
+    if (header) header.classList.remove('hidden');
+    
+    // 4. 뷰포트 설정
+    const viewport = document.getElementById('arcade-viewport');
+    if (!viewport) return; // 요소가 없으면 종료
 
-        for (let i = 1; i <= totalTables; i++) {
-            tableStates[i] = { type: 'none' }; 
-            viewport.innerHTML += createSlotHTML(i);
-        }
+    viewport.innerHTML = ''; 
+    viewport.classList.remove('hidden');
+    viewport.className = `arcade-grid grid-${totalTables}`;
+
+    for (let i = 1; i <= totalTables; i++) {
+        tableStates[i] = { type: 'none' }; 
+        viewport.innerHTML += createSlotHTML(i);
     }
+}
 
     export function createSlotHTML(id) {
         return `
