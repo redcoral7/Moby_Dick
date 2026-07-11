@@ -298,7 +298,7 @@
 </div>
     <!-- 개인정보 모달 -->
 <div id="user-info-modal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#0a0f0d; padding:25px; border:2px solid #d4af37; z-index:10000; border-radius:8px; width:300px; color:#fff; box-shadow:0 0 20px rgba(212,175,55,0.3);">
-    <h3 style="color:#d4af37; text-align:center;">👤 개인 정보 확인</h3>
+    <h3 style="color:#d4af37; text-align:center;">👤 개인 정보 </h3>
     <div id="modal-content" style="margin:20px 0; font-size:14px; line-height:2;">
         <!-- 데이터가 여기에 출력됩니다 -->
     </div>
@@ -495,9 +495,9 @@
     }
     // 2. 모달에 데이터 삽입
     content.innerHTML = `
-        <p><strong>이름(Name):</strong> ${data.login_id}</p>
-        <p><strong>소지포인트(Point):</strong> ${data.point} CHIPS</p>
-        <p><strong>인적사항(Code):</strong> ${data.code}</p>
+        <p><strong>이름:</strong> ${data.login_id}</p>
+        <p><strong>포인트:</strong> ${data.point} CHIPS</p>
+        <p><strong>인적사항:</strong> ${data.code}</p>
     `;
     // 3. 모달 보이기
     modal.classList.remove('hidden');
