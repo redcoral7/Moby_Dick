@@ -290,10 +290,19 @@
     </div>
     <div id="auth-logged-in" class="hidden">
         <div class="user-logged-info">
-            <span>🟢 환영합니다, <span id="user-display-name" style="color:#fff; font-size:15px; text-decoration: underline;"></span>님</span>
+            <!-- onclick 추가 -->
+            <span>🟢 환영합니다, <span id="user-display-name" style="color:#fff; font-size:15px; text-decoration: underline; cursor:pointer;" onclick="showUserInfo()"></span>님</span>
             <button class="action-btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="handleSignOut()">로그아웃</button>
         </div>
     </div>
+</div>
+    <!-- 개인정보 모달 -->
+<div id="user-info-modal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#0a0f0d; padding:25px; border:2px solid #d4af37; z-index:10000; border-radius:8px; width:300px; color:#fff; box-shadow:0 0 20px rgba(212,175,55,0.3);">
+    <h3 style="color:#d4af37; text-align:center;">👤 개인 정보 확인</h3>
+    <div id="modal-content" style="margin:20px 0; font-size:14px; line-height:2;">
+        <!-- 데이터가 여기에 출력됩니다 -->
+    </div>
+    <button class="action-btn-primary" style="width:100%;" onclick="document.getElementById('user-info-modal').classList.add('hidden')">닫기</button>
 </div>
 
 <header id="arcade-header" class="hidden">
@@ -470,7 +479,29 @@
         processLogoutState();
     }
 
-
+    async function showUserInfo() {
+    const modal = document.getElementById('user-info-modal');
+    const content = document.getElementById('modal-content');
+    
+    // 1. Supabase에서 상세 정보 조회 (필요 시)
+    const { data, error } = await supabaseClient
+        .from('users')
+        .select('login_id, point, code') // point와 code 컬럼을 가져옵니다.
+        .eq('login_id', loggedInUserNickname)
+        .single();
+    if (error) {
+        alert("데이터 로드 실패");
+        return;
+    }
+    // 2. 모달에 데이터 삽입
+    content.innerHTML = `
+        <p><strong>이름(Name):</strong> ${data.login_id}</p>
+        <p><strong>소지포인트(Point):</strong> ${data.point} CHIPS</p>
+        <p><strong>인적사항(Code):</strong> ${data.code}</p>
+    `;
+    // 3. 모달 보이기
+    modal.classList.remove('hidden');
+}
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
        ----------------------------------------------------------------- */
