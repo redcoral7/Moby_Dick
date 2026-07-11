@@ -680,8 +680,13 @@
 
     /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
+        // 💡 요소 ID가 동적으로 생성되므로 명확하게 타겟팅합니다.
         const ctrl = document.getElementById(`ctrl-${id}`);
-        if (!ctrl) return;
+        if (!ctrl) {
+            console.error(`Ctrl element not found: ctrl-${id}`);
+            return;
+        }
+        
         if (stage === 'ready') {
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">포인트 배팅 및 직접 블랙잭 플레이 개시</button>`;
         } else if (stage === 'play') {
@@ -800,7 +805,10 @@
 
     /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
-        document.getElementById(`ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">직접 배팅 결과 확인 (Roll)</button>`;
+        const ctrl = document.getElementById(`ctrl-${id}`);
+        if (ctrl) {
+            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">직접 배팅 결과 확인 (Roll)</button>`;
+        }
     }
 
     function oeSelect(id, choice) {
@@ -855,6 +863,8 @@
     /* 🎡 룰렛 모듈 */
     function roRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
+        if (!ctrl) return;
+        
         if (stage === 'ready') {
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="roSpin(${id})">로얄 룰렛 휠 스핀 스타트</button>`;
         } else if (stage === 'spinning') {
