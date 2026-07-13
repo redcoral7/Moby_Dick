@@ -501,6 +501,21 @@
     // 3. 모달 보이기
     modal.classList.remove('hidden');
 }
+
+    // 게임 시작 함수 정의
+function startGame(id) {
+    console.log("게임 시작 버튼이 눌렸습니다. 테이블 ID: " + id);
+    
+    // 1. 여기에 실제 게임 시작 로직을 작성하세요.
+    // 예: 딜러와 플레이어에게 카드를 분배하는 함수 호출 등
+    
+    // 2. 필요하다면 버튼을 비활성화하여 중복 클릭 방지
+    const btn = document.querySelector(`[onclick="startGame(${id})"]`);
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = "게임 진행 중...";
+    }
+}
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
        ----------------------------------------------------------------- */
