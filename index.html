@@ -519,15 +519,16 @@
         // 3. 블랙잭 보드 표시 (hidden 클래스 제거)
         // HTML의 <div id="bj-board-${id}" class="hidden"> 부분을 보이게 합니다.
         const bjBoard = document.getElementById(`bj-board-${id}`);
-        if (bjBoard) {
-            bjBoard.classList.remove('hidden');
+            if (bjBoard) {
+                bjBoard.classList.remove('hidden');
+            }
+            
+            // 4. 여기서 bjStart를 호출하기 전에 
+            // 컨트롤 영역(버튼)을 먼저 렌더링하고 게임을 진행하는 것이 안전합니다.
+            bjStart(id); 
+            bjRenderControls(id, 'play'); // <--- 이 부분을 확실히 호출하세요.
         }
-    
-        // 4. (필요 시) 카드 분배 로직 실행
-        // bjStart(id) 함수가 이미 버튼 클릭으로 연결되어 있다면, 
-        // 여기서 bjStart(id)를 호출하여 게임을 시작할 수 있습니다.
-        bjStart(id); 
-    }
+
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
        ----------------------------------------------------------------- */
@@ -752,16 +753,15 @@
 /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
-        if (stage === 'ready') {
-            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>`;
-        } else if (stage === 'play') {
+        console.log("렌더링할 컨트롤 대상:", ctrl); // 대상이 null인지 확인
+        if (stage === 'play') {
             ctrl.innerHTML = `
                 <button class="action-btn-primary" onclick="bjHit(${id})">히트 (Hit)</button>
                 <button class="action-btn-secondary" onclick="bjStand(${id})">스탠드 (Stand)</button>
             `;
         }
+        // ... 이하 동일
     }
-
     function bjStart(id) {
         const validatedBet = validateBettingChips(id);
         if(!validatedBet) return;
