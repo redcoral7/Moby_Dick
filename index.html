@@ -716,8 +716,16 @@
         const ctrl = document.getElementById(`ctrl-${id}`);
         if (!ctrl) return;
         
+        // 버튼이 들어갈 컨테이너를 강제로 초기화하여 중첩 방지
+        ctrl.innerHTML = ''; 
+        
         if (stage === 'ready') {
-            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%; padding:12px;" onclick="bjStart(${id})">배팅 및 게임 시작</button>`;
+            const btn = document.createElement('button');
+            btn.className = 'action-btn-primary';
+            btn.style.cssText = 'width:100%; padding:12px;';
+            btn.innerText = '배팅 및 게임 시작';
+            btn.onclick = function() { bjStart(id); };
+            ctrl.appendChild(btn);
         } else if (stage === 'play') {
             ctrl.innerHTML = `
                 <button class="action-btn-primary" style="padding:10px 25px;" onclick="bjHit(${id})">히트 (Hit)</button>
