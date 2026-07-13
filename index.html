@@ -621,10 +621,9 @@
                     <div id="msg-${id}" class="msg-line">포인트를 베팅해야 게임을 진행할 수 있습니다.</div>
                     <div id="calc-${id}" class="calc-line"></div>
                     <div id="loop-notice-${id}" class="loop-notice-line"></div>
+                    <!-- 624행부터 수정 -->
                     <div id="ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;">
-                        <!-- 이 안에 버튼이 있어야 화면에 보입니다 -->
-                        <button onclick="placeBet('${id}', 'low')">BET LOW</button>
-                        <button onclick="placeBet('${id}', 'high')">BET HIGH</button>
+                        <!-- 이제 bjRenderControls 함수에 의해 버튼이 동적으로 삽입됩니다 -->
                     </div>
 
                     <button class="reset-btn" onclick="backToGameSelection(${id})">⚙️ 상위 게임 선택창으로 강제 탈출</button>
@@ -718,7 +717,6 @@
         if (!ctrl) return;
         
         if (stage === 'ready') {
-            // 줄바꿈 오류를 수정한 코드입니다.
             ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%; padding:12px;" onclick="bjStart(${id})">배팅 및 게임 시작</button>`;
         } else if (stage === 'play') {
             ctrl.innerHTML = `
