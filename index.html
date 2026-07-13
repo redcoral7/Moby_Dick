@@ -714,19 +714,19 @@
 
     /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
-            const ctrl = document.getElementById(`ctrl-${id}`);
-            if (!ctrl) return;
-            
-            if (stage === 'ready') {
-                ctrl.innerHTML = `<button class="action-btn-primary" style="wi
-                // 버튼을 하나로 통합하고 bjStart 함수를 호출하도록 수정dth:100%; padding:12px;" onclick="bjStart(${id})">배팅 및 게임 시작</button>`;
-            } else if (stage === 'play') {
-                ctrl.innerHTML = `
-                    <button class="action-btn-primary" style="padding:10px 25px;" onclick="bjHit(${id})">히트 (Hit)</button>
-                    <button class="action-btn-secondary" style="padding:10px 25px;" onclick="bjStand(${id})">스탠드 (Stand)</button>
-                `;
-            }
+        const ctrl = document.getElementById(`ctrl-${id}`);
+        if (!ctrl) return;
+        
+        // 이전 버튼들을 지우고 하나로 통일
+        if (stage === 'ready') {
+            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%; padding:12px; cursor:pointer;" onclick="bjStart(${id})">배팅 및 게임 시작</button>`;
+        } else if (stage === 'play') {
+            ctrl.innerHTML = `
+                <button class="action-btn-primary" style="padding:10px 25px;" onclick="bjHit(${id})">히트 (Hit)</button>
+                <button class="action-btn-secondary" style="padding:10px 25px;" onclick="bjStand(${id})">스탠드 (Stand)</button>
+            `;
         }
+    }
 
     function bjStart(id) {
         const validatedBet = validateBettingChips(id);
