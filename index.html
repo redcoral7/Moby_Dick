@@ -510,31 +510,30 @@
     const diceEmojis = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
     const rouletteNumbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-
-    function initializeArcadeGrid() {
-        // 1. localStorage에서 닉네임 강제 로드
-        const savedNickname = localStorage.getItem('loggedInUserNickname');
-        
-        // 2. 전역 변수에 할당 (이게 없으면 베팅 로직에서 막힙니다)
-        if (savedNickname) {
-            window.loggedInUserNickname = savedNickname;
-            console.log("베팅을 위한 사용자 인증 완료:", window.loggedInUserNickname);
-        } else {
-            alert("로그인 정보가 확인되지 않습니다. 다시 로그인해주세요.");
-            return; // 테이블 오픈 중단
-        }
     
-        // 기존 테이블 생성 로직...
-        console.log("테이블이 성공적으로 오픈되었습니다.");
-    }
-        document.getElementById('setup-view').classList.add('hidden');
-        document.getElementById('arcade-header').classList.remove('hidden');
+    function initializeArcadeGrid() {
+            // 1. localStorage에서 닉네임 로드
+            const savedNickname = localStorage.getItem('arcade_fake_session_user');
+            
+            // 2. 전역 변수 및 window 객체에 할당
+            if (savedNickname) {
+                window.loggedInUserNickname = savedNickname;
+                loggedInUserNickname = savedNickname; // 내부 변수 동기화
+                console.log("베팅을 위한 사용자 인증 완료:", window.loggedInUserNickname);
+            } else {
+                alert("로그인 정보가 확인되지 않습니다. 다시 로그인해주세요.");
+                return; 
+            }
         
-        const viewport = document.getElementById('arcade-viewport');
-        viewport.innerHTML = ''; 
-        viewport.classList.remove('hidden');
-        viewport.innerHTML = createSlotHTML(1);
-    }
+            // 3. UI 전환 및 테이블 생성
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('arcade-header').classList.remove('hidden');
+            
+            const viewport = document.getElementById('arcade-viewport');
+            viewport.innerHTML = ''; 
+            viewport.classList.remove('hidden');
+            viewport.innerHTML = createSlotHTML(1);
+        }
 
     function returnToMainMenu() {
         const viewport = document.getElementById('arcade-viewport');
