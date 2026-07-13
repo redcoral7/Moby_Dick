@@ -502,20 +502,31 @@
     modal.classList.remove('hidden');
 }
 
-    // 게임 시작 함수 정의
-function startGame(id) {
-    console.log("게임 시작 버튼이 눌렸습니다. 테이블 ID: " + id);
+    function startGame(id) {
+        console.log("게임 시작: 테이블 ID " + id);
     
-    // 1. 여기에 실제 게임 시작 로직을 작성하세요.
-    // 예: 딜러와 플레이어에게 카드를 분배하는 함수 호출 등
+        // 1. 버튼 상태 변경
+        const btn = document.querySelector(`[onclick="startGame(${id})"]`);
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = "게임 진행 중...";
+        }
     
-    // 2. 필요하다면 버튼을 비활성화하여 중복 클릭 방지
-    const btn = document.querySelector(`[onclick="startGame(${id})"]`);
-    if (btn) {
-        btn.disabled = true;
-        btn.innerText = "게임 진행 중...";
+        // 2. 안내 문구 숨기기
+        // HTML에서 "포인트를 베팅해야..." 문구가 있는 태그에 id="msg-area"를 추가한 후 아래 코드 실행
+        const messageArea = document.querySelector('#play-layer-' + id + ' .msg-area');
+        if (messageArea) messageArea.style.display = 'none';
+    
+        // 3. 카드 정보 및 히트/스탠드 버튼 영역 활성화
+        // 기존에 숨겨져 있던(hidden) 카드 영역과 버튼 영역의 클래스를 제거하여 화면에 표시
+        const gameBoard = document.querySelector('#play-layer-' + id);
+        // 예시: 게임 보드 내의 특정 영역들을 찾아 hidden 클래스 제거
+        // gameBoard.querySelector('.card-area').classList.remove('hidden');
+        // gameBoard.querySelector('.control-area').classList.remove('hidden');
+        
+        // 4. (필요 시) 카드 분배 로직 실행
+        // drawInitialCards(id);
     }
-}
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
        ----------------------------------------------------------------- */
