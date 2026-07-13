@@ -58,11 +58,11 @@
             outline: none;
             width: 40%;
         }
+        
         .auth-btn-zone {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
+            display: none; /* 이 부분을 비활성화하고 JS로 제어하세요 */
         }
+        
         .user-logged-info {
             color: #34d399;
             font-size: 14px;
@@ -753,15 +753,23 @@
 /* ♣️ 블랙잭 컨트롤러 모듈 */
     function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
-        console.log("렌더링할 컨트롤 대상:", ctrl); // 대상이 null인지 확인
+        
+        if (!ctrl) return;
+    
+        // 강제로 보이게 설정
+        ctrl.style.display = 'flex'; 
+        ctrl.style.visibility = 'visible';
+        ctrl.style.opacity = '1';
+    
         if (stage === 'play') {
             ctrl.innerHTML = `
                 <button class="action-btn-primary" onclick="bjHit(${id})">히트 (Hit)</button>
                 <button class="action-btn-secondary" onclick="bjStand(${id})">스탠드 (Stand)</button>
             `;
+        } else if (stage === 'waiting') {
+            ctrl.innerHTML = `<div class="status-msg">카드를 분배하고 있습니다...</div>`;
         }
-        // ... 이하 동일
-    }
+    
     function bjStart(id) {
         const validatedBet = validateBettingChips(id);
         if(!validatedBet) return;
