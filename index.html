@@ -599,7 +599,7 @@
 					        <h4>다이스 결과 (Dice Result)</h4>
 					        <div id="oe-dice-${id}" class="dice-output" style="text-align:center;">🎲 🂠</div>
 					    </div>
-					    <div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center;"></div>
+					    <div id="oe-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center;"></div>
 					</div>
 
                     <!-- 룰렛 보드 -->
@@ -905,17 +905,9 @@
 
     /* 🎲 다이스 홀짝 모듈 */
 	function oeRenderControls(id, stage) {
-	    const ctrl = document.getElementById(`game-ctrl-${id}`);
+	    const ctrl = document.getElementById(`oe-ctrl-${id}`); 
 	    if (ctrl) {
-	        // 스타일을 명시적으로 지정하여 버튼이 확실히 보이게 합니다.
-	        ctrl.style.display = "flex";
-	        ctrl.style.justifyContent = "center";
-	        ctrl.style.minHeight = "45px";
-	        ctrl.style.marginTop = "10px";
-	        
-	        ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%; padding: 10px;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
-	    } else {
-	        console.error(`ID가 game-ctrl-${id} 인 요소를 찾을 수 없습니다.`);
+	        ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
 	    }
 	}
 	
