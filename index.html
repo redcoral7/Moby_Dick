@@ -908,8 +908,7 @@
 
     /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
-		 const ctrl = document.getElementById(`game-ctrl-${id}`);
-		if (stage === 'ready') { ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
+        document.getElementById(`game-ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
     }
 
     function oeSelect(id, choice) {
