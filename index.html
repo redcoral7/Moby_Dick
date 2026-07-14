@@ -881,10 +881,7 @@
 		        status = 'draw'; 
 		        msg.innerText = '🤝 무승부 (Push) 칩 반환.'; 
 		    }
-
-		console.log("업데이트 대상 ID:", loggedInUserNickname);
-		console.log("업데이트할 포인트 값:", newPoints);	
-		
+				
 		if (status !== 'draw') {
 		        const { error } = await supabaseClient
 		            .from('users')
@@ -892,10 +889,7 @@
 		            .eq('login_id', loggedInUserNickname);
 		            
 		        if (error) console.error("포인트 업데이트 실패:", error.message);
-		    } else {
-		        console.log("업데이트 성공!");
 		    }
-		}
 		
         if (status === 'win') {
             msg.className = 'msg-line win-text';
