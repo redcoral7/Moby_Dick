@@ -817,10 +817,20 @@
         bjEnd(id);
     }
 
-    function bjEnd(id) {
+    async function bjEnd(id) {
         const state = tableStates[id];
         state.isGameOver = true;
         document.getElementById(`bet-${id}`).disabled = false;
+
+		const { data: userData } = await supabaseClient
+        .from('users')
+        .select('point')
+        .eq('login_id', loggedInUserNickname)
+        .single();
+
+		const currentPoints = userData ? userData.point : 0;
+	    let newPoints = currentPoints;
+		
         bjRenderControls(id, 'ready');
         bjUpdateDisplay(id, false);
 
@@ -835,7 +845,16 @@
         else if (p > d) { status = 'win'; msg.innerText = 'Player Wins! 하이 스코어 달성!'; }
         else if (p < d) { status = 'lose'; msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; }
         else { status = 'draw'; msg.innerText = '🤝 무승부 (Push) 칩 반환.'; }
-
+		
+		if (status !== 'draw') {
+		        const { error } = await supabaseClient
+		            .from('users')
+		            .update({ point: newPoints })
+		            .eq('login_id', loggedInUserNickname);
+		            
+		        if (error) console.error("포인트 업데이트 실패:", error.message);
+		    }
+		
         if (status === 'win') {
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 10} CHIPS)`;
