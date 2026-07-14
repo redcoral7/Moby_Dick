@@ -729,7 +729,6 @@
     }
 
 /* ♣️ 블랙잭 컨트롤러 모듈 */
-    /* 블랙잭 엔진 */
 	function bjRenderControls(id, stage) {
 	        const ctrl = document.getElementById(`game-ctrl-${id}`);
 	        if (stage === 'ready') {
@@ -909,7 +908,8 @@
 
     /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
-        document.getElementById(`game-ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
+		 const ctrl = document.getElementById(`game-ctrl-${id}`);
+		if (stage === 'ready') { ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
     }
 
     function oeSelect(id, choice) {
