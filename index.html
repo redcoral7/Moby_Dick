@@ -861,12 +861,27 @@
         let calc = document.getElementById(`calc-${id}`);
         let status = '';
 
-        if (p > 21) { status = 'lose'; msg.innerText = 'Dealer Wins! 플레이어 버스트!'; }
-        else if (d > 21) { status = 'win'; msg.innerText = 'Player Wins! 딜러 버스트!'; }
-        else if (p > d) { status = 'win'; msg.innerText = 'Player Wins! 하이 스코어 달성!'; }
-        else if (p < d) { status = 'lose'; msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; }
-        else { status = 'draw'; msg.innerText = '🤝 무승부 (Push) 칩 반환.'; }
-		
+		if (p > 21) { 
+		        status = 'lose'; 
+		        msg.innerText = 'Dealer Wins! 플레이어 버스트!'; 
+		        newPoints -= (state.currentBet * 5); // 포인트 차감
+		    } else if (d > 21) { 
+		        status = 'win'; 
+		        msg.innerText = 'Player Wins! 딜러 버스트!'; 
+		        newPoints += (state.currentBet * 10); // 포인트 추가
+		    } else if (p > d) { 
+		        status = 'win'; 
+		        msg.innerText = 'Player Wins! 하이 스코어 달성!'; 
+		        newPoints += (state.currentBet * 10); // 포인트 추가
+		    } else if (p < d) { 
+		        status = 'lose'; 
+		        msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; 
+		        newPoints -= (state.currentBet * 5); // 포인트 차감
+		    } else { 
+		        status = 'draw'; 
+		        msg.innerText = '🤝 무승부 (Push) 칩 반환.'; 
+		    }
+				
 		if (status !== 'draw') {
 		        const { error } = await supabaseClient
 		            .from('users')
