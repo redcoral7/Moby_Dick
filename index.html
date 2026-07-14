@@ -752,17 +752,21 @@
 
 /* ♣️ 블랙잭 컨트롤러 모듈 */
     /* 블랙잭 엔진 */
-    function bjRenderControls(id, stage) {
-        const ctrl = document.getElementById(`ctrl-${id}`);
-        if (stage === 'ready') {
-            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>`;
-        } else if (stage === 'play') {
-            ctrl.innerHTML = `
-                <button class="action-btn-primary" onclick="bjHit(${id})">히트 (Hit)</button>
-                <button class="action-btn-secondary" onclick="bjStand(${id})">스탠드 (Stand)</button>
-            `;
-        }
-    }
+	function bjRenderControls(id, stage) {
+	        const ctrl = document.getElementById(`ctrl-${id}`);
+	        if (stage === 'ready') {
+	            // 아래 텍스트를 세 번째 사진과 동일하게 수정했습니다.
+	            ctrl.innerHTML = `
+	                <button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>
+	                <button class="reset-btn" onclick="backToGameSelection(${id})">⚙️ 테이블 마감 및 재오픈</button>
+	            `;
+	        } else if (stage === 'play') {
+	            ctrl.innerHTML = `
+	                <button class="action-btn-primary" onclick="bjHit(${id})">히트 (Hit)</button>
+	                <button class="action-btn-secondary" onclick="bjStand(${id})">스탠드 (Stand)</button>
+	            `;
+	        }
+	    }
 
     function bjStart(id) {
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
