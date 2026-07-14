@@ -737,7 +737,6 @@
 	            // 아래 텍스트를 세 번째 사진과 동일하게 수정했습니다.
 	            ctrl.innerHTML = `
 	                <button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>
-	                <button class="reset-btn" onclick="backToGameSelection(${id})">⚙️ 테이블 마감 및 재오픈</button>
 	            `;
 	        } else if (stage === 'play') {
 	            ctrl.innerHTML = `
@@ -933,8 +932,8 @@
 
     async function oeRoll(id) {
         const state = tableStates[id];
-        const validatedBet = validateBettingChips(id);
-        if(!validatedBet) return;
+        const betVal = validateBettingChips(id);
+        if(!betVal) return;
         if (!state.userChoice) return alert('배팅할 홀/짝 구역을 먼저 선택해 주세요.');
 		
 		const { data: userData } = await supabaseClient
@@ -947,7 +946,7 @@
 		    
 		if (userData.point < betVal) return alert('포인트가 부족합니다.');
 		
-        state.currentBet = validatedBet;
+        state.currentBet = betVal;
         const d1 = Math.floor(Math.random() * 6) + 1;
         const d2 = Math.floor(Math.random() * 6) + 1;
         const sum = d1 + d2;
@@ -960,9 +959,9 @@
 		let newPoints = userData.point + pointChange;
 
 		const { error } = await supabaseClient
-        .from('users')
-        .update({ point: newPoints })
-        .eq('login_id', loggedInUserNickname);
+	        .from('users')
+	        .update({ point: newPoints })
+	        .eq('login_id', loggedInUserNickname);
 
 	    if (error) {
 	        console.error("포인트 업데이트 실패:", error.message);
