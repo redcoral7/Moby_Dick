@@ -600,6 +600,7 @@
                             <h4>다이스 결과 (Dice Result)</h4>
                             <div id="oe-dice-${id}" class="dice-output" style="text-align:center;">🎲 🂠</div>
                         </div>
+						<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                     </div>
 
                     <!-- 룰렛 보드 -->
@@ -623,6 +624,7 @@
                                     <input type="number" id="ro-target-number-${id}" class="hidden" min="0" max="36" value="7">
                                 </div>
                             </div>
+							<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                         </div>
                         
                         <div class="roulette-wrapper">
@@ -909,10 +911,7 @@
 
     /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
-        const ctrl = document.getElementById(`ctrl-${id}`);
-        if (ctrl) {
-            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">직접 배팅 결과 확인 (Roll)</button>`;
-        }
+        document.getElementById(`game-ctrl-${id}`).innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="oeRoll(${id})">다이스 컵 오픈 (Roll)</button>`;
     }
 
     function oeSelect(id, choice) {
