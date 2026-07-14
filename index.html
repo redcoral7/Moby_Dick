@@ -581,8 +581,6 @@
                     <span class="table-id">MAIN-CONSOLE</span>
                     <h3 id="title-${id}" class="table-title-text">단일 집중 오퍼레이터실 (선택 대기)</h3>
                 </div>
-				
-				<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                 
                 <!-- 게임 선택 레이어 -->
                 <div id="select-layer-${id}" class="game-selector">
@@ -601,6 +599,9 @@
                     </div>
 
                     <!-- 블랙잭 보드 -->
+
+					<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
+					
                     <div id="bj-board-${id}" class="hidden">
                         <div class="game-section">
                             <h4>딜러 핸드 (Dealer Box)</h4>
@@ -613,6 +614,8 @@
                             <div id="bj-pscore-${id}" class="score">점수: 0</div>
                         </div>
                     </div>
+
+					
 
                     <!-- 홀짝 보드 -->
                     <div id="oe-board-${id}" class="hidden">
