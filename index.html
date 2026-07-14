@@ -581,6 +581,8 @@
                     <span class="table-id">MAIN-CONSOLE</span>
                     <h3 id="title-${id}" class="table-title-text">단일 집중 오퍼레이터실 (선택 대기)</h3>
                 </div>
+				
+				<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                 
                 <!-- 게임 선택 레이어 -->
                 <div id="select-layer-${id}" class="game-selector">
@@ -753,7 +755,7 @@
 /* ♣️ 블랙잭 컨트롤러 모듈 */
     /* 블랙잭 엔진 */
 	function bjRenderControls(id, stage) {
-	        const ctrl = document.getElementById(`ctrl-${id}`);
+	        const ctrl = document.getElementById(`game-ctrl-${id}`);
 	        if (stage === 'ready') {
 	            // 아래 텍스트를 세 번째 사진과 동일하게 수정했습니다.
 	            ctrl.innerHTML = `
