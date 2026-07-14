@@ -502,32 +502,6 @@
     modal.classList.remove('hidden');
 }
 
-    function startGame(id) {
-        console.log("게임 시작: 테이블 ID " + id);
-    
-        // 1. 버튼 상태 변경
-        const btn = document.querySelector(`[onclick="startGame(${id})"]`);
-        if (btn) {
-            btn.disabled = true;
-            btn.innerText = "게임 진행 중...";
-        }
-    
-        // 2. 안내 문구 숨기기
-        const msgArea = document.getElementById(`msg-${id}`);
-        if (msgArea) msgArea.style.display = 'none';
-    
-        // 3. 블랙잭 보드 표시 (hidden 클래스 제거)
-        // HTML의 <div id="bj-board-${id}" class="hidden"> 부분을 보이게 합니다.
-        const bjBoard = document.getElementById(`bj-board-${id}`);
-            if (bjBoard) {
-                bjBoard.classList.remove('hidden');
-            }
-            
-            // 4. 여기서 bjStart를 호출하기 전에 
-            // 컨트롤 영역(버튼)을 먼저 렌더링하고 게임을 진행하는 것이 안전합니다.
-            bjStart(id); 
-            bjRenderControls(id, 'play'); // <--- 이 부분을 확실히 호출하세요.
-        }
 
     /* -----------------------------------------------------------------
        GAME ENGINE (SINGLE TARGET & LOOP CONTROL)
