@@ -749,27 +749,6 @@
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 
-		// 1. 현재 유저의 포인트 데이터 가져오기
-	    const { data: userData, error: fetchError } = await supabaseClient
-	        .from('users')
-	        .select('point')
-	        .eq('login_id', loggedInUserNickname)
-	        .single();
-
-		if (fetchError || !userData) return alert('사용자 정보를 불러올 수 없습니다.');
-
-	    // 2. 베팅 금액이 현재 포인트보다 많은지 확인
-	    if (userData.point < betVal) {
-	        return alert(`포인트가 부족합니다. (현재 보유: ${userData.point})`);
-	    }
-	    // 3. 베팅 즉시 포인트 차감 (예치)
-	    const { error: updateError } = await supabaseClient
-	        .from('users')
-	        .update({ point: userData.point - betVal })
-	        .eq('login_id', loggedInUserNickname);
-	
-	    if (updateError) return alert('베팅 처리 중 오류 발생');
-
         const state = tableStates[id];
         state.isGameOver = false;
         state.currentBet = betVal;
