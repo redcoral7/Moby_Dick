@@ -584,7 +584,6 @@
                             <div id="bj-pscore-${id}" class="score">점수: 0</div>
                         </div>
 						<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
-					
                     </div>
 
 					
@@ -922,30 +921,20 @@
 
         if (choice === 'odd') {
             oddBtn.classList.add('selected'); evenBtn.classList.remove('selected');
-            msg.innerText = '🔮 [Odd / 홀수] 포지션에 직접 배팅을 선택했습니다.';
+            msg.innerText = '🔮 [Odd / 홀수] 배팅 락인. 주사위를 오픈하십시오.';
         } else {
             evenBtn.classList.add('selected'); oddBtn.classList.remove('selected');
-            msg.innerText = '🔮 [Even / 짝수] 포지션에 직접 배팅을 선택했습니다.';
+            msg.innerText = '🔮 [Even / 짝수] 배팅 락인. 주사위를 오픈하십시오.';
         }
         msg.className = 'msg-line';
     }
 
-    async function oeRoll(id) {
+    function oeRoll(id) {
         const state = tableStates[id];
-        const betVal = validateBettingChips(id);
-        if(!betVal) return;
-        if (!state.userChoice) return alert('배팅할 홀/짝 구역을 먼저 선택해 주세요.');
-		
-		const { data: userData } = await supabaseClient
-		        .from('users')
-		        .select('point')
-		        .eq('login_id', loggedInUserNickname)
-		        .single();
-		
-		if (!userData) return alert('사용자 정보를 찾을 수 없습니다.');
-		    
-		if (userData.point < betVal) return alert('포인트가 부족합니다.');
-		
+        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+        if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
+        if (!state.userChoice) return alert('홀/짝 구역에 베팅을 먼저 결정하십시오.');
+
         state.currentBet = betVal;
         const d1 = Math.floor(Math.random() * 6) + 1;
         const d2 = Math.floor(Math.random() * 6) + 1;
@@ -954,36 +943,20 @@
         document.getElementById(`oe-dice-${id}`).innerText = `${diceEmojis[d1]} + ${diceEmojis[d2]} = ${sum} [${isOddResult ? '홀':'짝'}]`;
 
         const isWin = (state.userChoice === 'odd' && isOddResult) || (state.userChoice === 'even' && !isOddResult);
-
-		let pointChange = isWin ? (betVal * 5) : -(betVal * 5);
-		let newPoints = userData.point + pointChange;
-
-		const { error } = await supabaseClient
-	        .from('users')
-	        .update({ point: newPoints })
-	        .eq('login_id', loggedInUserNickname);
-
-	    if (error) {
-	        console.error("포인트 업데이트 실패:", error.message);
-	        return alert("정산 처리 중 오류가 발생했습니다.");
-	    }
-		
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
 
         if (isWin) {
-            msg.innerText = '🎉 축하합니다! 직접 배팅하신 포지션이 적중했습니다.'; msg.className = 'msg-line win-text';
-            calc.innerText = `📈 배당 정산 결과 (+${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line win-text';
+            msg.innerText = '🎉 축하합니다! 베팅 포지션 적중.'; msg.className = 'msg-line win-text';
+            calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line win-text';
         } else {
-            msg.innerText = '❌ 적중 실패. 하우스 포지션입니다.'; msg.className = 'msg-line lose-text';
-            calc.innerText = `📉 손실 정산 결과 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
+            msg.innerText = '❌ 하우스 승리! 베팅 포지션 이탈.'; msg.className = 'msg-line lose-text';
+            calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
         }
 
         state.userChoice = null;
         document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
         document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
-        
-        triggerAutomaticReturn(id);
     }
 
     /* 🎡 룰렛 모듈 */
