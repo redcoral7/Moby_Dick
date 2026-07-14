@@ -751,24 +751,26 @@
     }
 
 /* ♣️ 블랙잭 컨트롤러 모듈 */
+    /* 블랙잭 엔진 */
     function bjRenderControls(id, stage) {
         const ctrl = document.getElementById(`ctrl-${id}`);
-        console.log("렌더링할 컨트롤 대상:", ctrl); // 대상이 null인지 확인
-        if (stage === 'play') {
+        if (stage === 'ready') {
+            ctrl.innerHTML = `<button class="action-btn-primary" style="width:100%;" onclick="bjStart(${id})">칩 배팅 & 카드 딜링 개시</button>`;
+        } else if (stage === 'play') {
             ctrl.innerHTML = `
                 <button class="action-btn-primary" onclick="bjHit(${id})">히트 (Hit)</button>
                 <button class="action-btn-secondary" onclick="bjStand(${id})">스탠드 (Stand)</button>
             `;
         }
-        // ... 이하 동일
     }
+
     function bjStart(id) {
-        const validatedBet = validateBettingChips(id);
-        if(!validatedBet) return;
+        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+        if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 
         const state = tableStates[id];
         state.isGameOver = false;
-        state.currentBet = validatedBet;
+        state.currentBet = betVal;
 
         state.deck = [];
         for (let suit of suits) {
@@ -783,7 +785,7 @@
         state.dealerHand = [state.deck.pop(), state.deck.pop()];
 
         document.getElementById(`msg-${id}`).className = 'msg-line';
-        document.getElementById(`msg-${id}`).innerText = `♠️ 딜러 카드 분배 완료. 결정을 내리십시오.`;
+        document.getElementById(`msg-${id}`).innerText = `🎲 카드를 분배하고 있습니다...`;
         document.getElementById(`calc-${id}`).innerText = '';
         document.getElementById(`bet-${id}`).disabled = true;
 
@@ -807,14 +809,14 @@
     function bjUpdateDisplay(id, hideDealer) {
         const state = tableStates[id];
         document.getElementById(`bj-pcards-${id}`).innerText = state.playerHand.map(c => c.suit+c.value).join(' ');
-        document.getElementById(`bj-pscore-${id}`).innerText = `플레이어 현재 스코어: ${bjScore(state.playerHand)}`;
+        document.getElementById(`bj-pscore-${id}`).innerText = `점수: ${bjScore(state.playerHand)}`;
 
         if (hideDealer) {
             document.getElementById(`bj-dcards-${id}`).innerText = state.dealerHand[0].suit + state.dealerHand[0].value + ' 🂠';
-            document.getElementById(`bj-dscore-${id}`).innerText = '딜러 스코어: ?';
+            document.getElementById(`bj-dscore-${id}`).innerText = '점수: ?';
         } else {
             document.getElementById(`bj-dcards-${id}`).innerText = state.dealerHand.map(c => c.suit+c.value).join(' ');
-            document.getElementById(`bj-dscore-${id}`).innerText = `딜러 최종 스코어: ${bjScore(state.dealerHand)}`;
+            document.getElementById(`bj-dscore-${id}`).innerText = `점수: ${bjScore(state.dealerHand)}`;
         }
     }
 
@@ -846,27 +848,27 @@
         let calc = document.getElementById(`calc-${id}`);
         let status = '';
 
-        if (p > 21) { status = 'lose'; msg.innerText = 'Bust! 플레이어 스코어 초과로 인한 정산 패배.'; }
-        else if (d > 21) { status = 'win'; msg.innerText = 'Dealer Bust! 하우스 버스트 승리!'; }
-        else if (p > d) { status = 'win'; msg.innerText = 'Player Wins! 딜러보다 높은 숫자를 기록했습니다.'; }
-        else if (p < d) { status = 'lose'; msg.innerText = 'Dealer Wins! 하우스에 점수 미달 패배.'; }
-        else { status = 'draw'; msg.innerText = '🤝 Push! 딜러와 비겼으므로 원금을 회수합니다.'; }
+        if (p > 21) { status = 'lose'; msg.innerText = 'Dealer Wins! 플레이어 버스트!'; }
+        else if (d > 21) { status = 'win'; msg.innerText = 'Player Wins! 딜러 버스트!'; }
+        else if (p > d) { status = 'win'; msg.innerText = 'Player Wins! 하이 스코어 달성!'; }
+        else if (p < d) { status = 'lose'; msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; }
+        else { status = 'draw'; msg.innerText = '🤝 무승부 (Push) 칩 반환.'; }
 
         if (status === 'win') {
             msg.className = 'msg-line win-text';
-            calc.innerText = `📈 나의 직접 배팅 배당금 정산 완료 (+${state.currentBet * 10} CHIPS)`;
+            calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 10} CHIPS)`;
             calc.className = 'calc-line win-text';
         } else if (status === 'lose') {
             msg.className = 'msg-line lose-text';
-            calc.innerText = `📉 나의 직접 배팅 손실액 정산 완료 (-${state.currentBet * 5} CHIPS)`;
+            calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`;
             calc.className = 'calc-line lose-text';
         } else {
-            calc.innerText = '결과 정산: 변동 없음 (0 CHIPS)';
+            calc.innerText = '결과 정산: 0 CHIPS';
             calc.className = 'calc-line';
         }
-        
-        triggerAutomaticReturn(id);
+	triggerAutomaticReturn(id);
     }
+
 
     /* 🎲 다이스 홀짝 모듈 */
     function oeRenderControls(id, stage) {
