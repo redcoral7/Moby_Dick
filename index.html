@@ -623,7 +623,7 @@
                                     <input type="number" id="ro-target-number-${id}" class="hidden" min="0" max="36" value="7">
                                 </div>
                             </div>
-							<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
+							<div id="ro-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                         </div>
                         
                         <div class="roulette-wrapper">
@@ -960,7 +960,7 @@
 
     /* 🎡 룰렛 모듈 */
     function roRenderControls(id, stage) {
-        const ctrl = document.getElementById(`ctrl-${id}`);
+        const ctrl = document.getElementById(`ro-ctrl-${id}`);
         if (!ctrl) return;
         
         if (stage === 'ready') {
