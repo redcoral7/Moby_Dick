@@ -696,22 +696,6 @@
         tableStates[id] = { type: 'none' };
     }
 
-    function triggerAutomaticReturn(id) {
-        let countdown = 4;
-        const noticeEl = document.getElementById(`loop-notice-${id}`);
-        noticeEl.innerText = `🔄 판돈 정산 완료: ${countdown}초 후 게임 선택창으로 강제 리턴됩니다.`;
-        
-        const interval = setInterval(() => {
-            countdown--;
-            if(countdown <= 0) {
-                clearInterval(interval);
-                backToGameSelection(id);
-            } else {
-                noticeEl.innerText = `🔄 판돈 정산 완료: ${countdown}초 후 게임 선택창으로 강제 리턴됩니다.`;
-            }
-        }, 1000);
-    }
-
     function validateBettingChips(id) {
         const betInput = document.getElementById(`bet-${id}`);
         const betVal = parseInt(betInput.value);
