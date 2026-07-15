@@ -1023,90 +1023,92 @@
         }
     }
 
-    function roSpin(id) {
-        const validatedBet = validateBettingChips(id);
-        if(!validatedBet) return;
+    async function roSpin(id) {
+		const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+	    if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
+	
+		const { data: userData, error: fetchError } = await supabaseClient
+		        .from('users')
+		        .select('point')
+		        .eq('login_id', loggedInUserNickname)
+		        .single();
 
-        const type = document.getElementById(`ro-type-${id}`).value;
-        let prediction = "";
+		if (fetchError || !userData) return alert('사용자 정보를 불러올 수 없습니다.');
+	    if (userData.point < betVal) return alert(`포인트가 부족합니다. (현재 보유: ${userData.point})`);
+	
+		const { error: updateError } = await supabaseClient
+		        .from('users')
+		        .update({ point: userData.point - betVal })
+		        .eq('login_id', loggedInUserNickname);
+	    
+	    if (updateError) return alert('베팅 처리 중 오류 발생');
 
-        if (type === 'color' || type === 'oe') {
-            prediction = document.getElementById(`ro-target-select-${id}`).value;
-        } else {
-            const num = parseInt(document.getElementById(`ro-target-number-${id}`).value);
-            if (isNaN(num) || num < 0 || num > 36) return alert('0~36 내부 숫자를 입력해주세요.');
-            prediction = num;
-        }
+		const type = document.getElementById(`ro-type-${id}`).value;
+		let prediction = (type === 'color' || type === 'oe') ? document.getElementById(`ro-target-select-${id}`).value : parseInt(document.getElementById(`ro-target-number-${id}`).value);
+		    
+		if (type === 'number' && (isNaN(prediction) || prediction < 0 || prediction > 36)) return alert('0~36 내부 숫자를 입력해주세요.');
 
         const state = tableStates[id];
-        state.currentBet = validatedBet;
+        state.currentBet = betVal;
         roRenderControls(id, 'spinning');
         
-        document.getElementById(`bet-${id}`).disabled = true;
-        document.getElementById(`ro-type-${id}`).disabled = true;
-        document.getElementById(`ro-target-select-${id}`).disabled = true;
-        document.getElementById(`ro-target-number-${id}`).disabled = true;
-        document.getElementById(`msg-${id}`).innerText = "🎰 황동 휠 작동 완료. 볼이 트랙을 타고 회전 중입니다.";
-        document.getElementById(`msg-${id}`).className = 'msg-line';
-        document.getElementById(`calc-${id}`).innerText = "";
-
-        const winningIndex = Math.floor(Math.random() * rouletteNumbers.length);
-        const calculatedNumber = rouletteNumbers[winningIndex];
-
-        const degreesPerSlot = 360 / rouletteNumbers.length;
-        state.currentRotation += 1800 + (winningIndex * degreesPerSlot);
-
-        const wheel = document.getElementById(`wheel-canvas-${id}`);
-        wheel.style.transform = `rotate(-${state.currentRotation}deg)`;
-
-        setTimeout(() => {
-            roEvaluateResult(id, calculatedNumber, type, prediction);
-        }, 3300);
-    }
-
-    function roEvaluateResult(id, winNum, type, pred) {
-        const state = tableStates[id];
+		document.getElementById(`bet-${id}`).disabled = true;
+	    document.getElementById(`ro-type-${id}`).disabled = true;
+	    document.getElementById(`ro-target-select-${id}`).disabled = true;
+	    document.getElementById(`ro-target-number-${id}`).disabled = true;
+	    document.getElementById(`msg-${id}`).innerText = "🎰 황동 휠 작동 완료. 볼이 트랙을 타고 회전 중입니다.";
+		
+		const winningIndex = Math.floor(Math.random() * rouletteNumbers.length);
+	    const calculatedNumber = rouletteNumbers[winningIndex];
+	    state.currentRotation += 1800 + (winningIndex * (360 / rouletteNumbers.length));
+	    document.getElementById(`wheel-canvas-${id}`).style.transform = `rotate(-${state.currentRotation}deg)`;
+	
+	    setTimeout(() => {
+	        roEvaluateResult(id, calculatedNumber, type, prediction, userData.point - betVal);
+	    }, 3300);
+	}
+	
+	async function roEvaluateResult(id, winNum, type, pred, pointsBeforeWin) {
+   		const state = tableStates[id];
+		
         document.getElementById(`bet-${id}`).disabled = false;
         document.getElementById(`ro-type-${id}`).disabled = false;
         document.getElementById(`ro-target-select-${id}`).disabled = false;
         document.getElementById(`ro-target-number-${id}`).disabled = false;
         roRenderControls(id, 'ready');
 
-        const isRed = redNumbers.includes(winNum);
-        let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
-        let winColorEmoji = winNum === 0 ? "🟢" : (isRed ? "🔴" : "⚫");
-        let isOdd = winNum % 2 !== 0;
-        let winOeStr = winNum === 0 ? "None" : (isOdd ? "Odd" : "Even");
-
-        let msg = document.getElementById(`msg-${id}`);
-        let calc = document.getElementById(`calc-${id}`);
-        msg.innerText = `🎯 최종 안착 스페이스: [ ${winColorEmoji} No.${winNum} (${winOeStr}) ]`;
-
-        let isWin = false;
-        let lossFactor = 5; 
-
-        if (type === 'color') {
-            isWin = (pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black');
-        } else if (type === 'oe') {
-            isWin = (winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd));
-        } else if (type === 'number') {
-            isWin = (parseInt(pred) === winNum);
-            lossFactor = 10; 
-        }
-
-        if (isWin) {
-            let payoutFactor = (type === 'number') ? 10 : 2;
-            msg.className = 'msg-line win-text';
-            calc.innerText = `📈 배당 적중 성공! 직접 배팅 칩 정산 완료 (+${state.currentBet * payoutFactor} CHIPS)`;
-            calc.className = 'calc-line win-text';
-        } else {
-            msg.className = 'msg-line lose-text';
-            calc.innerText = `📉 적중 실패. 직접 배팅 칩 회수 정산 완료 (-${state.currentBet * lossFactor} CHIPS)`;
-            calc.className = 'calc-line lose-text';
-        }
-        
-        triggerAutomaticReturn(id);
-    }
+		const isRed = redNumbers.includes(winNum);
+	    let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
+	    let isOdd = winNum % 2 !== 0;
+	    
+	    let isWin = (type === 'color') ? ((pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black')) :
+	                (type === 'oe') ? ((winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd))) :
+	                (parseInt(pred) === winNum);
+	
+	    let msg = document.getElementById(`msg-${id}`);
+	    let calc = document.getElementById(`calc-${id}`);
+	
+	    if (isWin) {
+	        let payoutFactor = (type === 'number') ? 10 : 2;
+	        let winAmount = state.currentBet * payoutFactor;
+	        
+	        // 승리 시 칩 추가 (현재 잔액 + 보상)
+	        await supabaseClient
+	            .from('users')
+	            .update({ point: pointsBeforeWin + winAmount })
+	            .eq('login_id', loggedInUserNickname);
+	            
+	        msg.className = 'msg-line win-text';
+	        calc.innerText = `📈 배당 적중 성공! (+${winAmount} CHIPS)`;
+	    } else {
+	        msg.className = 'msg-line lose-text';
+	        calc.innerText = `📉 적중 실패. (-${state.currentBet} CHIPS)`;
+	    }
+	
+	    updateUIChips(); // 화면 업데이트
+	    triggerAutomaticReturn(id);
+	    roRenderControls(id, 'ready');
+	}
 </script>
 
 </body>
