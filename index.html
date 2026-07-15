@@ -359,17 +359,23 @@
 
 <script>
 	async function checkAdminAndRedirect() {
-	    const { data: { user } } = await supabaseClient.auth.getUser();
-	    if (!user) return; 
+		const currentUserId = localStorage.getItem('login_id');
 	
 	    const { data, error } = await supabaseClient
 	        .from('users')
 	        .select('is_admin')
 	        .eq('login_id', loggedInUserNickname)
 	        .single();
+		
+	if (error) {
+	        console.error("데이터 조회 에러:", error);
+	        return;
+	    }
 	
-	    if (!error && data && data.is_admin) {
+	    if (data && data.is_admin === true) {
 	        window.location.href = 'index2.html';
+	    } else {
+	        alert("관리자 권한이 없습니다.");
 	    }
 	}
     /* -----------------------------------------------------------------
