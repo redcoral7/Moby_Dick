@@ -66,9 +66,13 @@
         <!-- 유저 리스트를 렌더링할 영역 -->
         <div id="user-management-list" class="mt-8"></div>
     </div>
-
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        // 1. 페이지 로드 시 관리자 권한 체크
+        const SUPABASE_URL = "https://zoasgzpjlmuegrvxlwgy.supabase.co"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq"; 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const loggedInUserNickname = localStorage.getItem('arcade_fake_session_user');
+
         async function checkAccess() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) return window.location.href = 'index.html';
