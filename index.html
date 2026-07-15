@@ -928,35 +928,55 @@
         msg.className = 'msg-line';
     }
 
-    function oeRoll(id) {
-        const state = tableStates[id];
-        const betVal = parseInt(document.getElementById(`bet-${id}`).value);
-        if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
-        if (!state.userChoice) return alert('홀/짝 구역에 베팅을 먼저 결정하십시오.');
-
-        state.currentBet = betVal;
-        const d1 = Math.floor(Math.random() * 6) + 1;
-        const d2 = Math.floor(Math.random() * 6) + 1;
-        const sum = d1 + d2;
-        const isOddResult = (sum % 2 !== 0);
-        document.getElementById(`oe-dice-${id}`).innerText = `${diceEmojis[d1]} + ${diceEmojis[d2]} = ${sum} [${isOddResult ? '홀':'짝'}]`;
-
-        const isWin = (state.userChoice === 'odd' && isOddResult) || (state.userChoice === 'even' && !isOddResult);
-        let msg = document.getElementById(`msg-${id}`);
-        let calc = document.getElementById(`calc-${id}`);
-
-        if (isWin) {
-            msg.innerText = '🎉 축하합니다! 베팅 포지션 적중.'; msg.className = 'msg-line win-text';
-            calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line win-text';
-        } else {
-            msg.innerText = '❌ 하우스 승리! 베팅 포지션 이탈.'; msg.className = 'msg-line lose-text';
-            calc.innerText = `📉 CHIPS 정산 완료 (-${state.currentBet * 5} CHIPS)`; calc.className = 'calc-line lose-text';
-        }
-
-        state.userChoice = null;
-        document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
-        document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
-    }
+	function oeRoll(id) {
+	    const state = tableStates[id];
+	    const betVal = parseInt(document.getElementById(`bet-${id}`).value);
+	    
+	    if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
+	    if (!state.userChoice) return alert('홀/짝 구역에 베팅을 먼저 결정하십시오.');
+	    
+	    if (userData.point < betVal) return alert('보유하신 칩이 부족합니다.');
+	
+	    state.currentBet = betVal;
+	    
+	    // 칩 차감 (베팅 시점)
+	    userData.point -= betVal; 
+	
+	    const d1 = Math.floor(Math.random() * 6) + 1;
+	    const d2 = Math.floor(Math.random() * 6) + 1;
+	    const sum = d1 + d2;
+	    const isOddResult = (sum % 2 !== 0);
+	    
+	    document.getElementById(`oe-dice-${id}`).innerText = `${diceEmojis[d1]} + ${diceEmojis[d2]} = ${sum} [${isOddResult ? '홀':'짝'}]`;
+	
+	    const isWin = (state.userChoice === 'odd' && isOddResult) || (state.userChoice === 'even' && !isOddResult);
+	    let msg = document.getElementById(`msg-${id}`);
+	    let calc = document.getElementById(`calc-${id}`);
+	
+	    if (isWin) {
+	        // 승리 시: 베팅금의 2배(원금 포함) 반환 예시 (배당률에 따라 조절)
+	        const winAmount = betVal * 2; 
+	        userData.point  += winAmount;
+	        
+	        msg.innerText = '🎉 축하합니다! 베팅 포지션 적중.'; 
+	        msg.className = 'msg-line win-text';
+	        calc.innerText = `📈 CHIPS 정산 완료 (+${winAmount} CHIPS)`; 
+	        calc.className = 'calc-line win-text';
+	    } else {
+	        // 패배 시: 이미 차감됨
+	        msg.innerText = '❌ 하우스 승리! 베팅 포지션 이탈.'; 
+	        msg.className = 'msg-line lose-text';
+	        calc.innerText = `📉 CHIPS 정산 완료 (-${betVal} CHIPS)`; 
+	        calc.className = 'calc-line lose-text';
+	    }
+	
+	    // 3. 갱신된 보유 칩 수량을 화면에 업데이트 (중요!)
+	    updateUIChips(); 
+	
+	    state.userChoice = null;
+	    document.getElementById(`oe-oddbtn-${id}`).classList.remove('selected');
+	    document.getElementById(`oe-evenbtn-${id}`).classList.remove('selected');
+	}
 
     /* 🎡 룰렛 모듈 */
     function roRenderControls(id, stage) {
