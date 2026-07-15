@@ -1069,41 +1069,64 @@
 	}
 	
 	async function roEvaluateResult(id, winNum, type, pred, pointsBeforeWin) {
-   		const state = tableStates[id];
-		
+        const state = tableStates[id];
         document.getElementById(`bet-${id}`).disabled = false;
         document.getElementById(`ro-type-${id}`).disabled = false;
         document.getElementById(`ro-target-select-${id}`).disabled = false;
         document.getElementById(`ro-target-number-${id}`).disabled = false;
         roRenderControls(id, 'ready');
 
-		const isRed = redNumbers.includes(winNum);
-	    let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
-	    let isOdd = winNum % 2 !== 0;
-	    
-	    let isWin = (type === 'color') ? ((pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black')) :
-	                (type === 'oe') ? ((winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd))) :
-	                (parseInt(pred) === winNum);
-	
-	    let msg = document.getElementById(`msg-${id}`);
-	    let calc = document.getElementById(`calc-${id}`);
-	
-	    if (isWin) {
-	        let payoutFactor = (type === 'number') ? 10 : 2;
-	        let winAmount = state.currentBet * payoutFactor;
+        const isRed = redNumbers.includes(winNum);
+        let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
+        let winColorEmoji = winNum === 0 ? "🟢" : (isRed ? "🔴" : "⚫");
+        let isOdd = winNum % 2 !== 0;
+        let winOeStr = winNum === 0 ? "None" : (isOdd ? "Odd" : "Even");
+
+        let msg = document.getElementById(`msg-${id}`);
+        let calc = document.getElementById(`calc-${id}`);
+        msg.innerText = `🎯 볼 안착 결과: [ ${winColorEmoji} No.${winNum} (${winOeStr}) ]`;
+
+        let isWin = false;
+        let lossFactor = 5; 
+
+        if (type === 'color') {
+            isWin = (pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black');
+        } else if (type === 'oe') {
+            isWin = (winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd));
+        } else if (type === 'number') {
+            isWin = (parseInt(pred) === winNum);
+            lossFactor = 10; 
+        }
 	        
-	        // 승리 시 칩 추가 (현재 잔액 + 보상)
+	        if (isWin) {
+            let payoutFactor = (type === 'number') ? 10 : 2;
+			let winAmount = state.currentBet * payoutFactor;
+        // 승리 시 칩 추가 (현재 잔액 + 보상)
 	        await supabaseClient
 	            .from('users')
 	            .update({ point: pointsBeforeWin + winAmount })
 	            .eq('login_id', loggedInUserNickname);
-	            
-	        msg.className = 'msg-line win-text';
-	        calc.innerText = `📈 배당 적중 성공! (+${winAmount} CHIPS)`;
-	    } else {
-	        msg.className = 'msg-line lose-text';
-	        calc.innerText = `📉 적중 실패. (-${state.currentBet} CHIPS)`;
-	    }
+            msg.className = 'msg-line win-text';
+            calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * payoutFactor} CHIPS)`;
+            calc.className = 'calc-line win-text';
+			} else {
+			    // 1. 패배 시 추가 차감 금액 계산
+			    let lossFactor = (type === 'number') ? 10 : 5; // 규칙에 따른 배율
+			    let loseAmount = state.currentBet * lossFactor;
+			    
+			    // 2. 이미 베팅금(1배)은 차감되었으므로, 추가로 (배율-1)배만큼 더 차감
+			    // 예: 5배 차감이라면 이미 1배 차감했으니 4배를 더 차감해야 함
+			    let additionalLoss = state.currentBet * (lossFactor - 1);
+			    
+			    await supabaseClient
+			        .from('users')
+			        .update({ point: pointsBeforeWin - additionalLoss })
+			        .eq('login_id', loggedInUserNickname);
+			
+			    msg.className = 'msg-line lose-text';
+			    calc.innerText = `📉 적중 실패. 정산 완료 (-${loseAmount} CHIPS)`;
+			    calc.className = 'calc-line lose-text';
+			}
 	
 	    updateUIChips(); // 화면 업데이트
 	    triggerAutomaticReturn(id);
