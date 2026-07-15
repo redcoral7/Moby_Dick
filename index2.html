@@ -3,7 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>ADMIN: POINT INTELLIGENCE</title>
-    <!-- 기존 CSS 스타일을 여기에 유지하세요 -->
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #030704;
+            background-image: radial-gradient(circle at 50% 50%, #081a10 0%, #020503 100%);
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px;
+        }
+        #admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #b89030;
+            border-radius: 8px;
+            padding: 30px;
+        }
+        h1 {
+            color: #d4af37;
+            border-bottom: 2px solid #b89030;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        .user-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border: 1px solid #543b24;
+            margin-bottom: 10px;
+            background: rgba(20, 15, 10, 0.5);
+            border-radius: 4px;
+        }
+        .user-name { font-weight: bold; color: #ebd6a0; flex: 1; }
+        input[type="number"] {
+            background: #000;
+            border: 1px solid #b89030;
+            color: #fff;
+            padding: 5px 10px;
+            width: 120px;
+            text-align: right;
+        }
+        button {
+            background: linear-gradient(to bottom, #c49a3c, #805f1d);
+            color: #000;
+            border: none;
+            padding: 6px 15px;
+            margin-left: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover { background: #d4af37; }
+    </style>
 </head>
 <body class="bg-black text-white">
 
