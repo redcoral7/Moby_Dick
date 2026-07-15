@@ -586,8 +586,6 @@
 						<div id="game-ctrl-${id}" style="margin-top:10px; display:flex; justify-content:center; gap:4px; flex-wrap:wrap;"></div>
                     </div>
 
-					
-
 					<!-- 홀짝 보드 영역 수정 -->
 					<div id="oe-board-${id}" class="hidden">
 					    <div class="game-section" style="text-align:center;">
@@ -610,7 +608,6 @@
                                     <label style="font-size:11px; color:#c49a3c; font-weight:bold;">BET TYPE</label>
                                     <select id="ro-type-${id}" onchange="roTypeChange(${id})">
                                         <option value="color">색상 (Red/Black)</option>
-                                        <option value="oe">홀짝 (Odd/Even)</option>
                                         <option value="number">숫자 지정 (0~36)</option>
                                     </select>
                                 </div>
@@ -1080,7 +1077,6 @@
         let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
         let winColorEmoji = winNum === 0 ? "🟢" : (isRed ? "🔴" : "⚫");
         let isOdd = winNum % 2 !== 0;
-        let winOeStr = winNum === 0 ? "None" : (isOdd ? "Odd" : "Even");
 
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
@@ -1091,8 +1087,6 @@
 
         if (type === 'color') {
             isWin = (pred === 'red' && winColor === 'Red') || (pred === 'black' && winColor === 'Black');
-        } else if (type === 'oe') {
-            isWin = (winNum !== 0) && ((pred === 'odd' && isOdd) || (pred === 'even' && !isOdd));
         } else if (type === 'number') {
             isWin = (parseInt(pred) === winNum);
             lossFactor = 10; 
