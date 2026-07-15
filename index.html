@@ -257,7 +257,7 @@
         <span style="font-weight: 800; color: #ffff00;">이 사이트는 자캐커뮤를 목적으로 제작된 사이트 입니다.</span>
         <span style="font-size: 11px; font-weight: normal; margin-top: 10px; opacity: 0.9;">실제 금전 거래나 사행성 요소가 전혀 없는 가상의 웹 텍스트 보드게임 테이블 레이아웃 시뮬레이터입니다.</span>
     </div>
-    <a href="#" class="flash-banner b-type-tenbet size-wing-box" onclick="alert('⚡️ 개발자 후원 감사 보너스!')">
+    <a href="#" class="flash-banner b-type-tenbet size-wing-box" onclick="checkAdminAndRedirect()">
         <span>⚡️ 밤샘 개발 ⚡️</span>
         <span style="font-size:10px; color:#fff; margin-top:5px;">가입 시 아이스 아메리카노<br>샷 추가 10% 돌발 15%<br>디카페인 변경 [2580]</span>
     </a>
@@ -358,12 +358,25 @@
 </div>
 
 <script>
+	async function checkAdminAndRedirect() {
+	    const { data: { user } } = await supabaseClient.auth.getUser();
+	    if (!user) return; 
+	
+	    const { data, error } = await supabaseClient
+	        .from('users')
+	        .select('is_admin')
+	        .eq('login_id', loggedInUserNickname)
+	        .single();
+	
+	    if (!error && data && data.is_admin) {
+	        window.location.href = 'index2.html';
+	    }
+	}
     /* -----------------------------------------------------------------
        SUPABASE CONFIGURATION & AUTH ENGINE
        ----------------------------------------------------------------- */
-    // 💡 주소 중간의 오타(é)를 알파벳 (e)로 완벽하게 교정했습니다.
+  
     const SUPABASE_URL = "https://zoasgzpjlmuegrvxlwgy.supabase.co"; 
-    // 💡 보내주신 새로운 퍼블리셔블 키를 깔끔하게 세팅했습니다.
     const SUPABASE_ANON_KEY = "sb_publishable_sn8jOIw-F2FnSez4vPWjaA_gNvkARpq"; 
     
     let supabaseClient = null;
