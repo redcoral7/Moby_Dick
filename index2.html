@@ -90,12 +90,21 @@
 
         // 2. 관리자용 유저 목록 불러오기 및 렌더링
         async function loadUserList() {
-            const { data: users, error } = await supabaseClient.from('users').select('*');
+            const { data: users, error } = await supabaseClient
+                .from('users')
+                .select('id, name, point'); 
+            
             const container = document.getElementById('user-management-list');
+            
+            if (error) {
+                console.error("데이터 로드 오류:", error);
+                return;
+            }
             
             if (users) {
                 container.innerHTML = users.map(u => `
                     <div class="user-row">
+                        <!-- 이름과 포인트를 나란히 배치합니다 -->
                         <span class="user-name">${u.name}</span>
                         <div>
                             <input type="number" id="pts-${u.id}" value="${u.point}">
@@ -105,7 +114,6 @@
                 `).join('');
             }
         }
-
         // 3. 포인트 수정 함수
         async function updateUserPoints(userId) {
             const newPoint = document.getElementById(`pts-${userId}`).value;
