@@ -95,10 +95,12 @@
             
             if (users) {
                 container.innerHTML = users.map(u => `
-                    <div class="flex gap-4 p-4 border border-zinc-800 mb-2">
-                        <span>${u.name}</span>
-                        <input type="number" id="pts-${u.id}" value="${u.point}" class="bg-black border p-1 text-right">
-                        <button onclick="updateUserPoints('${u.id}')" class="bg-red-900 px-4">UPDATE</button>
+                    <div class="user-row">
+                        <span class="user-name">${u.name}</span>
+                        <div>
+                            <input type="number" id="pts-${u.id}" value="${u.point}">
+                            <button onclick="updateUserPoints('${u.id}')">UPDATE</button>
+                        </div>
                     </div>
                 `).join('');
             }
