@@ -1077,6 +1077,7 @@
         let winColor = winNum === 0 ? "Green" : (isRed ? "Red" : "Black");
         let winColorEmoji = winNum === 0 ? "🟢" : (isRed ? "🔴" : "⚫");
         let isOdd = winNum % 2 !== 0;
+		let winOeStr = winNum === 0 ? "None" : (isOdd ? "Odd" : "Even");
 
         let msg = document.getElementById(`msg-${id}`);
         let calc = document.getElementById(`calc-${id}`);
@@ -1107,9 +1108,6 @@
 			    // 1. 패배 시 추가 차감 금액 계산
 			    let lossFactor = (type === 'number') ? 10 : 5; // 규칙에 따른 배율
 			    let loseAmount = state.currentBet * lossFactor;
-			    
-			    // 2. 이미 베팅금(1배)은 차감되었으므로, 추가로 (배율-1)배만큼 더 차감
-			    // 예: 5배 차감이라면 이미 1배 차감했으니 4배를 더 차감해야 함
 			    let additionalLoss = state.currentBet * (lossFactor - 1);
 			    
 			    await supabaseClient
