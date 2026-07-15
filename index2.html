@@ -74,25 +74,37 @@
         const loggedInUserNickname = localStorage.getItem('arcade_fake_session_user');
 
         async function checkAccess() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return window.location.href = 'index.html';
-
+            // 1. Supabase에서 현재 세션 가져오기
+            const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+            
+            // 2. localStorage에서 닉네임 가져오기
+            const nickname = localStorage.getItem('arcade_fake_session_user');
+        
+            // 3. 인증 정보나 닉네임이 없으면 즉시 이동
+            if (!session || !nickname) {
+                console.log("세션 혹은 닉네임 정보 없음");
+                return window.location.href = 'index.html';
+            }
+        
+            // 4. DB에서 관리자 권한 확인
             const { data, error } = await supabaseClient
                 .from('users')
                 .select('is_admin')
-                .eq('login_id', loggedInUserNickname) // 사용자 식별 변수
+                .eq('login_id', nickname)
                 .single();
-
-            if (error || !data || !data.is_admin) {
-                alert("권한 없음");
+        
+            // 디버깅을 위한 로그 추가 (콘솔창에서 확인 가능)
+            console.log("조회된 데이터:", data, "에러:", error);
+        
+            if (error || !data || data.is_admin !== true) {
+                alert("관리자 권한이 없습니다.");
                 window.location.href = 'index.html';
             } else {
+                // 성공 시 화면 표시
                 document.getElementById('admin-container').classList.remove('hidden');
-                loadUserList(); // 관리자라면 리스트 로드
+                loadUserList();
             }
-        }
-
-        // 2. 관리자용 유저 목록 불러오기 및 렌더링
+                // 2. 관리자용 유저 목록 불러오기 및 렌더링
         async function loadUserList() {
             const { data: users, error } = await supabaseClient
                 .from('users')
