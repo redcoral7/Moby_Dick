@@ -725,6 +725,25 @@
         return betVal;
     }
 
+		// 버튼 제어용 헬퍼 함수 추가
+	function setControlButtonsDisabled(disabledStatus) {
+	    // 1. 초기 콘솔 패널 리턴 버튼 (헤더)
+	    const headerBtn = document.querySelector('#arcade-header button');
+	    if (headerBtn) headerBtn.disabled = disabledStatus;
+	
+	    // 2. 강제 탈출 버튼 (현재 활성화된 테이블 내)
+	    const resetBtns = document.querySelectorAll('.reset-btn');
+	    resetBtns.forEach(btn => btn.disabled = disabledStatus);
+	}
+	
+	// 3. 게임 정산 후 자동 복구용 (blackjack, roulette, oddeven 결과 함수 끝에 추가)
+	function triggerAutomaticReturn(id) {
+	    // 결과 정산 후 잠시 대기 후 버튼 활성화
+	    setTimeout(() => {
+	        setControlButtonsDisabled(false);
+	    }, 1000); 
+	}
+	
 /* ♣️ 블랙잭 컨트롤러 모듈 */
 	function bjRenderControls(id, stage) {
 	        const ctrl = document.getElementById(`game-ctrl-${id}`);
@@ -742,6 +761,7 @@
 	    }
 
     async function bjStart(id) {
+		setControlButtonsDisabled(true);
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 	
@@ -929,6 +949,7 @@
     }
 
 		async function oeRoll(id) {
+			setControlButtonsDisabled(true);
 		    const state = tableStates[id];
 		    const betVal = parseInt(document.getElementById(`bet-${id}`).value);
 		    
@@ -1024,6 +1045,7 @@
     }
 
     async function roSpin(id) {
+		setControlButtonsDisabled(true);
 		const betVal = parseInt(document.getElementById(`bet-${id}`).value);
 	    if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
 	
