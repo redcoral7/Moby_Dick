@@ -358,20 +358,6 @@
 </div>
 
 <script>
-	function isMaintenanceTime() {
-	    const now = new Date();
-	    const hours = now.getHours();
-	    return hours >= 17;
-	}
-	
-	function checkMaintenance() {
-	    if (isMaintenanceTime()) {
-	        alert("⚠️ 현재 시스템 점검 시간입니다 (23:00~24:00). 모든 게임 이용이 제한됩니다.");
-	        return true;
-	    }
-	    return false;
-	}
-	
 	async function checkAdminAndRedirect() {
 		const currentUserId = localStorage.getItem('login_id');
 	
@@ -414,11 +400,6 @@
         } else {
             processLogoutState();
         }
-		if (isMaintenanceTime()) {
-	        const openBtn = document.getElementById('open-station-btn');
-	        if (openBtn) {
-	            openBtn.disabled = true;
-	            openBtn.innerText = "현재 시스템 점검 중 (23시~24시)";
     });
 
     function processLoginSuccess(username) {
@@ -780,7 +761,6 @@
 	    }
 
     async function bjStart(id) {
-		if (checkMaintenance()) return;
 		setControlButtonsDisabled(true);
         const betVal = parseInt(document.getElementById(`bet-${id}`).value);
         if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
@@ -969,7 +949,6 @@
     }
 
 		async function oeRoll(id) {
-			if (checkMaintenance()) return;
 			setControlButtonsDisabled(true);
 		    const state = tableStates[id];
 		    const betVal = parseInt(document.getElementById(`bet-${id}`).value);
@@ -1066,7 +1045,6 @@
     }
 
     async function roSpin(id) {
-		if (checkMaintenance()) return;
 		setControlButtonsDisabled(true);
 		const betVal = parseInt(document.getElementById(`bet-${id}`).value);
 	    if (isNaN(betVal) || betVal <= 0) return alert('정확한 칩 수량을 투입하십시오.');
