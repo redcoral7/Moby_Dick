@@ -1006,6 +1006,8 @@
 		        msg.className = 'msg-line lose-text';
 		        calc.innerText = `📉 CHIPS 정산 완료 (-${betVal} CHIPS)`;
 		    }
+			
+			triggerAutomaticReturn(id);	
 		
 		    updateUIChips(); // UI 갱신 함수 호출
 		    state.userChoice = null;
@@ -1129,6 +1131,7 @@
             msg.className = 'msg-line win-text';
             calc.innerText = `📈 CHIPS 정산 완료 (+${state.currentBet * payoutFactor} CHIPS)`;
             calc.className = 'calc-line win-text';
+			triggerAutomaticReturn(id);
 			} else {
 			    // 1. 패배 시 추가 차감 금액 계산
 			    let lossFactor = (type === 'number') ? 10 : 5; // 규칙에 따른 배율
@@ -1143,10 +1146,10 @@
 			    msg.className = 'msg-line lose-text';
 			    calc.innerText = `📉 적중 실패. 정산 완료 (-${loseAmount} CHIPS)`;
 			    calc.className = 'calc-line lose-text';
+				triggerAutomaticReturn(id);
 			}
 	
 	    updateUIChips(); // 화면 업데이트
-	    triggerAutomaticReturn(id);
 	    roRenderControls(id, 'ready');
 	}
 </script>
