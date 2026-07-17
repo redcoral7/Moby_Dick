@@ -140,6 +140,7 @@
             0%, 100% { background: #00f0ff; color: #000; border-color: #fff; }
             50% { background: #000bbd; color: #00ffff; border-color: #00f0ff; box-shadow: 0 0 20px #00f0ff; }
         }
+		
         @keyframes shake { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px) translateX(1px); } }
         .b-type-ministop { animation: blinkMini 0.3s infinite linear; }
         @keyframes blinkMini { 0% { background: #ffea00; color: #111; border-color: #ff0000; } 50% { background: #ff3c00; color: #fff; border-color: #ffea00; } 100% { background: #111; color: #ffea00; border-color: #fff; } }
@@ -150,6 +151,21 @@
         .size-wing-box { width: 140px; height: 110px; font-size: 12px; }
         .size-wing-tall { width: 140px; height: 250px; font-size: 13px; line-height: 1.6; padding: 15px 10px; }
 
+			/* 배너 이미지가 꽉 차게 들어가는 전용 클래스 */
+		.b-type-banner { 
+		    padding: 0 !important; /* 이미지 주변 여백 강제 제거 */
+		    overflow: hidden;      /* 이미지가 테두리를 넘지 않게 고정 */
+		    display: flex;         /* 이미지 정렬 */
+		    border: none;          /* 테두리가 겹칠 경우 대비 */
+		}
+		
+		/* 배너 내부 이미지 설정 */
+		.b-type-banner img {
+		    width: 100%;
+		    height: 100%;
+		    object-fit: fill;      /* 여백 없이 영역에 강제 맞춤 */
+		    display: block;        /* 하단 미세 공백 방지 */
+		}
         /* 게임 스테이션 */
         .setup-screen {
             max-width: 600px;
@@ -347,8 +363,8 @@
         <span style="font-size: 16px;">🍫 민트초코 반대 총연합회 🍫</span>
         <span class="banner-subtext">반대 서명 시 일반 초콜릿 20% 특별 증정 / 치약맛 절대 배격</span>
     </a>
-    <a href="#" class="flash-banner b-type-tenbet size-long" onclick="alert('🚨 팝업텍스트')">
-   		<img src="배너.png" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+    <a href="#" class="flash-banner b-type-praha b-type-banner size-long" onclick="...">
+    	<img src="배너.png">
 	</a>
     <a href="#" class="flash-banner b-type-wolf size-long" onclick="alert('🐺 은혜 갚은 늑대재단 공식 보증 쉼터 🐺')">
         <span style="font-size: 18px;">🐺 은혜 갚은 늑대 재단 🐺</span>
