@@ -319,17 +319,17 @@
         <h4 style="margin-bottom: 12px; font-size: 13px;">🎰 ROYAL CASINO OPERATIONS</h4>
         <div class="guide-item">
             <span class="guide-tag">블랙잭 (Blackjack)</span>
-            <span>딜러와 카드를 겨뤄 버스트 없이 21에 근접 시 배당 정산. <br><strong>[정산]</strong> 승리 시 <span class="win-text">+10배</span> / 패배 시 <span class="lose-text">-5배</span></span>
+            <span>딜러와 카드를 겨뤄 버스트 없이 21에 근접 시 배당 정산. <br><strong>[정산]</strong> 승리 시 <span class="win-text">+5배</span> / 패배 시 <span class="lose-text">-5배</span></span>
         </div>
         <div class="guide-item">
             <span class="guide-tag">다이스 홀짝 (Dice O/E)</span>
-            <span>주사위 눈 총합의 홀/짝 포지션을 적중시킵니다. <br><strong>[정산]</strong> 승리 시 <span class="win-text">+5배</span> / 패배 시 <span class="lose-text">-5배</span></span>
+            <span>주사위 눈 총합의 홀/짝 포지션을 적중시킵니다. <br><strong>[정산]</strong> 승리 시 <span class="win-text">+2배</span> / 패배 시 <span class="lose-text">-2배</span></span>
         </div>
         <div class="guide-item">
             <span class="guide-tag">룰렛 휠 (Roulette Wheel)</span>
             <span>황동 휠 내부에 안착될 트랙 스페이스를 매칭합니다. <br>
-                • 컬러 포지션: 승리 시 <span class="win-text">+2배</span> / 패배 시 <span class="lose-text">-5배</span><br>
-                • <span style="color:#d4af37; font-weight:bold;">단일 숫자 저격:</span> 승리 시 <span class="win-text">+10배</span> / 패배 시 <span class="lose-text" style="font-weight:bold;">-10배</span>
+                • 컬러 포지션: 승리 시 <span class="win-text">+3배</span> / 패배 시 <span class="lose-text">-3배</span><br>
+                • <span style="color:#d4af37; font-weight:bold;">단일 숫자 저격:</span> 승리 시 <span class="win-text">+10배</span> / 패배 시 <span class="lose-text" style="font-weight:bold;">-3배</span>
             </span>
         </div>
     </div>
@@ -884,11 +884,11 @@
 		    } else if (d > 21) { 
 		        status = 'win'; 
 		        msg.innerText = 'Player Wins! 딜러 버스트!'; 
-		        newPoints += (state.currentBet * 10); // 포인트 추가
+		        newPoints += (state.currentBet * 5); // 포인트 추가
 		    } else if (p > d) { 
 		        status = 'win'; 
 		        msg.innerText = 'Player Wins! 하이 스코어 달성!'; 
-		        newPoints += (state.currentBet * 10); // 포인트 추가
+		        newPoints += (state.currentBet * 5); // 포인트 추가
 		    } else if (p < d) { 
 		        status = 'lose'; 
 		        msg.innerText = 'Dealer Wins! 스코어 미달 패배.'; 
@@ -1121,7 +1121,7 @@
         }
 	        
 	        if (isWin) {
-            let payoutFactor = (type === 'number') ? 10 : 2;
+            let payoutFactor = (type === 'number') ? 10 : 3;
 			let winAmount = state.currentBet * payoutFactor;
         // 승리 시 칩 추가 (현재 잔액 + 보상)
 	        await supabaseClient
@@ -1134,7 +1134,7 @@
 			triggerAutomaticReturn(id);
 			} else {
 			    // 1. 패배 시 추가 차감 금액 계산
-			    let lossFactor = (type === 'number') ? 10 : 5; // 규칙에 따른 배율
+			    let lossFactor = (type === 'number') ? 3 : 3; // 규칙에 따른 배율
 			    let loseAmount = state.currentBet * lossFactor;
 			    let additionalLoss = state.currentBet * (lossFactor - 1);
 			    
